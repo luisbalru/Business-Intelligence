@@ -1,0 +1,123 @@
+1. Title: Online News Popularity
+
+2. Source Information
+    -- Creators: Kelwin Fernandes (kafc ‘@’ inesctec.pt, kelwinfc ’@’ gmail.com),
+                 Pedro Vinagre (pedro.vinagre.sousa ’@’ gmail.com) and
+                 Pedro Sernadela
+   -- Donor: Kelwin Fernandes (kafc ’@’ inesctec.pt, kelwinfc '@' gmail.com)
+   -- Date: May, 2015
+   
+   -- Adapted by J. Casillas to binary classification with umbalance distribution
+      and missing values
+
+3. Past Usage:
+    1. K. Fernandes, P. Vinagre and P. Cortez. A Proactive Intelligent Decision
+       Support System for Predicting the Popularity of Online News. Proceedings
+       of the 17th EPIA 2015 - Portuguese Conference on Artificial Intelligence,
+       September, Coimbra, Portugal.
+
+       -- Results: 
+          -- Binary classification as popular vs unpopular using a decision
+             threshold of 1400 social interactions.
+          -- Experiments with different models: Random Forest (best model),
+             Adaboost, SVM, KNN and Naïve Bayes.
+          -- Recorded 67% of accuracy and 0.73 of AUC.
+    - Predicted attribute: online news popularity (boolean)
+
+4. Relevant Information:
+   -- The articles were published by Mashable (www.mashable.com) and their
+      content as the rights to reproduce it belongs to them. Hence, this
+      dataset does not share the original content but some statistics
+      associated with it. The original content be publicly accessed and
+      retrieved using the provided urls.
+   -- Acquisition date: January 8, 2015
+
+5. Number of Instances: 39644 
+
+6. Number of Attributes: 61 (58 predictive attributes, 1 goal field)
+
+7. Attribute Information:
+     1. n_tokens_title:                Number of words in the title
+     2. n_tokens_content:              Number of words in the content
+     3. n_unique_tokens:               Rate of unique words in the content
+     4. n_non_stop_words:              Rate of non-stop words in the content
+     5. n_non_stop_unique_tokens:      Rate of unique non-stop words in the
+                                       content
+     6. num_hrefs:                     Number of links
+     7. num_self_hrefs:                Number of links to other articles
+                                       published by Mashable
+     8. num_imgs:                      Number of images
+     9. num_videos:                    Number of videos
+    10. average_token_length:          Average length of the words in the
+                                       content
+    11. num_keywords:                  Number of keywords in the metadata
+    12. data_channel_is_lifestyle:     Is data channel 'Lifestyle'?
+    13. data_channel_is_entertainment: Is data channel 'Entertainment'?
+    14. data_channel_is_bus:           Is data channel 'Business'?
+    15. data_channel_is_socmed:        Is data channel 'Social Media'?
+    16. data_channel_is_tech:          Is data channel 'Tech'?
+    17. data_channel_is_world:         Is data channel 'World'?
+    18. kw_min_min:                    Worst keyword (min. shares)
+    19. kw_max_min:                    Worst keyword (max. shares)
+    20. kw_avg_min:                    Worst keyword (avg. shares)
+    21. kw_min_max:                    Best keyword (min. shares)
+    22. kw_max_max:                    Best keyword (max. shares)
+    23. kw_avg_max:                    Best keyword (avg. shares)
+    24. kw_min_avg:                    Avg. keyword (min. shares)
+    25. kw_max_avg:                    Avg. keyword (max. shares)
+    26. kw_avg_avg:                    Avg. keyword (avg. shares)
+    27. self_reference_min_shares:     Min. shares of referenced articles in
+                                       Mashable
+    28. self_reference_max_shares:     Max. shares of referenced articles in
+                                       Mashable
+    29. self_reference_avg_sharess:    Avg. shares of referenced articles in
+                                       Mashable
+    30. weekday_is_monday:             Was the article published on a Monday?
+    31. weekday_is_tuesday:            Was the article published on a Tuesday?
+    32. weekday_is_wednesday:          Was the article published on a Wednesday?
+    33. weekday_is_thursday:           Was the article published on a Thursday?
+    34. weekday_is_friday:             Was the article published on a Friday?
+    35. weekday_is_saturday:           Was the article published on a Saturday?
+    36. weekday_is_sunday:             Was the article published on a Sunday?
+    37. is_weekend:                    Was the article published on the weekend?
+    38. LDA_00:                        Closeness to LDA topic 0
+    39. LDA_01:                        Closeness to LDA topic 1
+    40. LDA_02:                        Closeness to LDA topic 2
+    41. LDA_03:                        Closeness to LDA topic 3
+    42. LDA_04:                        Closeness to LDA topic 4
+    43. global_subjectivity:           Text subjectivity
+    44. global_sentiment_polarity:     Text sentiment polarity
+    45. global_rate_positive_words:    Rate of positive words in the content
+    46. global_rate_negative_words:    Rate of negative words in the content
+    47. rate_positive_words:           Rate of positive words among non-neutral
+                                       tokens
+    48. rate_negative_words:           Rate of negative words among non-neutral
+                                       tokens
+    49. avg_positive_polarity:         Avg. polarity of positive words
+    50. min_positive_polarity:         Min. polarity of positive words
+    51. max_positive_polarity:         Max. polarity of positive words
+    52. avg_negative_polarity:         Avg. polarity of negative  words
+    53. min_negative_polarity:         Min. polarity of negative  words
+    54. max_negative_polarity:         Max. polarity of negative  words
+    55. title_subjectivity:            Title subjectivity
+    56. title_sentiment_polarity:      Title polarity
+    57. abs_title_subjectivity:        Absolute subjectivity level
+    58. abs_title_sentiment_polarity:  Absolute polarity level
+    59. class:                         popular or no_popular (target)
+
+8. Missing Attribute Values: 24%
+
+9. Class Distribution: 
+   no_popular            30718
+   popular                8926
+
+
+ 
+ Citation Request:
+ 
+ Please include this citation if you plan to use this database: 
+ 
+    K. Fernandes, P. Vinagre and P. Cortez. A Proactive Intelligent Decision
+    Support System for Predicting the Popularity of Online News. Proceedings
+    of the 17th EPIA 2015 - Portuguese Conference on Artificial Intelligence,
+    September, Coimbra, Portugal.
