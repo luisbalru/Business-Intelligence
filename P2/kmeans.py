@@ -57,18 +57,23 @@ def kMeans(dataset,dataset_norm,num_clusters,caso):
         f.write('%s: %5d (%5.2f%%)' % (num,i,100*i/len(clusters))+"\n")
     f.close()
 
+    # HEATMAP CON CENTROIDES
     centers = pd.DataFrame(k_means.cluster_centers_,columns=list(dataset))
     centers_desnormal = centers.copy()
 
     for var in list(centers):
         centers_desnormal[var] = dataset[var].min() + centers[var] * (dataset[var].max() - dataset[var].min())
 
-    sns.heatmap(centers, cmap="YlGnBu", annot = centers_desnormal, fmt='.3f')
+    ax = sns.heatmap(centers, cmap="YlGnBu", annot = centers_desnormal, fmt='.3f')
+    figure = ax.get_figure()
+    figure.savefig("./resultados/"+caso+"/heatmap-km.png", dpi=400)
+
+    # Scatter Plot
     X_kmeans = pd.concat([dataset,clusters],axis=1)
     sns.set()
     variables = list(X_kmeans)
     variables.remove('cluster')
-    sns_plot = sns.pairplot(X_kmeans, vars = variables, hue = 'cluster') 
+    sns_plot = sns.pairplot(X_kmeans, vars = variables, hue = 'cluster')
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03)
     sns_plot.savefig("./resultados/"+caso+"/kmeans.png")
 

@@ -1,4 +1,4 @@
-Ejecutando MeanShift: 1.18 segundos, 
+Ejecutando MeanShift: 1.27 segundos, 
 Número estimado de clusters: 2 
 Calinski-Harabaz Index: 24903.026, 
 Silhouette Coefficient: 0.51388
