@@ -17,6 +17,7 @@ import numpy as np
 import kmeans as km
 import meanshift as ms
 import birch as br
+import dbscan as db
 import os
 
 def norm_to_zero_one(df):
@@ -34,15 +35,18 @@ subset = subset.loc[censo['EDADPAD'] > 0]
 usadas = ['EDAD', 'ESREAL', 'CMUNN', 'ESTUMAD', 'ESTUPAD']
 X = subset[usadas]
 X_norm = X.apply(norm_to_zero_one)
-
+caso = "Caso1"
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
  # km.ElbowMethod(X)
-caso = "Caso1"
+
 #km.kMeans(X,X_norm,2,caso)
 
 # MEAN SHIFT
 #ms.meanshift(X,X_norm,caso)
 
 # BIRCH
-br.birch(X,X_norm,4,caso)
+#br.birch(X,X_norm,4,caso)
+
+# DBSCAN
+#db.dbscan(X,X_norm,0.2,50,caso)
