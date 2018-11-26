@@ -18,6 +18,7 @@ import kmeans as km
 import meanshift as ms
 import birch as br
 import dbscan as db
+import jerarquico as j
 import os
 
 def norm_to_zero_one(df):
@@ -50,3 +51,6 @@ caso = "Caso1"
 
 # DBSCAN
 #db.dbscan(X,X_norm,0.2,50,caso)
+
+# CLUSTERING JERÁRQUICO. WARD
+j.agglomerativeClustering(X,100,caso)
