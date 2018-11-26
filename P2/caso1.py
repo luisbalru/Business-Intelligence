@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 import kmeans as km
 import meanshift as ms
+import birch as br
 import os
 
 def norm_to_zero_one(df):
@@ -41,4 +42,7 @@ caso = "Caso1"
 #km.kMeans(X,X_norm,2,caso)
 
 # MEAN SHIFT
-ms.meanshift(X,X_norm,caso)
+#ms.meanshift(X,X_norm,caso)
+
+# BIRCH
+br.birch(X,X_norm,4,caso)

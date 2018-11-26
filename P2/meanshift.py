@@ -50,12 +50,14 @@ def meanshift(dataset,dataset_norm,caso):
     f.close()
 
     centers = pd.DataFrame(cluster_centers,columns=list(dataset))
+    print(centers)
     centers_desnormal = centers.copy()
 
 
     for var in list(centers):
         centers_desnormal[var] = dataset[var].min() + centers[var] * (dataset[var].max() - dataset[var].min())
 
+    print(centers_desnormal)
     ax = sns.heatmap(centers, cmap="YlGnBu", annot=centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
     figure.savefig("./resultados/"+caso+"/heatmap-ms.png", dpi=400)
