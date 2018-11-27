@@ -24,6 +24,8 @@ import seaborn as sns
 
 
 def meanshift(dataset,dataset_norm,caso):
+    if(not(os.path.isdir("./resultados/"+caso+"/MeanShift"))):
+        os.mkdir("./resultados/"+caso+"/MeanShift")
     bandwidth = estimate_bandwidth(dataset_norm, quantile=0.2, n_samples=500)
     ms = MeanShift(bandwidth = bandwidth, bin_seeding=True)
     t = time.time()
@@ -33,7 +35,7 @@ def meanshift(dataset,dataset_norm,caso):
     cluster_centers = ms.cluster_centers_
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
-    f = open("./resultados/"+caso+"/meanshift.txt","w")
+    f = open("./resultados/"+caso+"/MeanShift/meanshift.txt","w")
     f.write("Ejecutando MeanShift")
     f.write(": {:.2f} segundos, ".format(tiempo)+"\n")
     f.write("Número estimado de clusters: %d \n" %n_clusters_)
@@ -60,7 +62,7 @@ def meanshift(dataset,dataset_norm,caso):
     print(centers_desnormal)
     ax = sns.heatmap(centers, cmap="YlGnBu", annot=centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
-    figure.savefig("./resultados/"+caso+"/heatmap-ms.png", dpi=400)
+    figure.savefig("./resultados/"+caso+"/MeanShift/heatmap-ms.png", dpi=400)
 
     X_meanshift = pd.concat([dataset, clusters], axis=1)
     sns.set()
@@ -68,7 +70,7 @@ def meanshift(dataset,dataset_norm,caso):
     variables.remove('cluster')
     sns_plot = sns.pairplot(X_meanshift, vars=variables, hue="cluster") #en hue indicamos que la columna 'cluster' define los colores
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03);
-    sns_plot.savefig("./resultados/"+caso+"/meanshift.png")
+    sns_plot.savefig("./resultados/"+caso+"/Meanshift/meanshift.png")
 
 
 #'''

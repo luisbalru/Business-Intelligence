@@ -37,12 +37,17 @@ def ElbowMethod(dataset_norm):
     plt.show()
 
 
-def kMeans(dataset,dataset_norm,num_clusters,caso):
-    k_means = KMeans(init='k-means++', n_clusters=num_clusters)
+def kMeans(dataset,dataset_norm,caso):
+    if(not(os.path.isdir("./resultados/"+caso+"/kMeans"))):
+        os.mkdir("./resultados/"+caso+"/kMeans")
+    ElbowMethod(dataset_norm)
+    n_cl = print("Indica el número de clusters: ")
+    n_cl = int(n_cl)
+    k_means = KMeans(init='k-means++', n_clusters=n_cl)
     t = time.time()
     cluster_predict = k_means.fit_predict(dataset_norm)
     tiempo = time.time() - t
-    f = open("./resultados/"+caso+"/kmeans.txt","w")
+    f = open("./resultados/"+caso+"/kMeans/kmeans.txt","w")
     f.write("Ejecutando k-means")
     f.write(": {:.2f} segundos, ".format(tiempo))
     metric_CH = metrics.calinski_harabaz_score(dataset_norm, cluster_predict)
@@ -66,7 +71,7 @@ def kMeans(dataset,dataset_norm,num_clusters,caso):
 
     ax = sns.heatmap(centers, cmap="YlGnBu", annot = centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
-    figure.savefig("./resultados/"+caso+"/heatmap-km.png", dpi=400)
+    figure.savefig("./resultados/"+caso+"/kMeans/heatmap-km.png", dpi=400)
 
     # Scatter Plot
     X_kmeans = pd.concat([dataset,clusters],axis=1)
@@ -75,6 +80,6 @@ def kMeans(dataset,dataset_norm,num_clusters,caso):
     variables.remove('cluster')
     sns_plot = sns.pairplot(X_kmeans, vars = variables, hue = 'cluster')
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03)
-    sns_plot.savefig("./resultados/"+caso+"/kmeans.png")
+    sns_plot.savefig("./resultados/"+caso+"/kMeans/kmeans.png")
 
 #'''

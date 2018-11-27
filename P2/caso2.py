@@ -5,7 +5,7 @@ Autor:
 Fecha:
     Noviembre/2018
 Contenido:
-    Caso 1 de estudio
+    Caso 2 de estudio: Mujeres científicas
     Práctica 2
     Inteligencia de Negocio
     Doble Grado en Ingeniería Informática y Matemáticas
@@ -24,35 +24,36 @@ import os
 def norm_to_zero_one(df):
     return (df - df.min()) * 1.0 / (df.max() - df.min())
 
-if(not(os.path.isdir("./resultados/Caso1"))):
-    os.mkdir("./resultados/Caso1")
+if(not(os.path.isdir("./resultados/Caso2"))):
+    os.mkdir("./resultados/Caso2")
 
 censo = pd.read_csv('./data/censo_granada.csv')
 censo = censo.replace(np.NaN,0)
 
-subset = censo.loc[censo['EDADMAD'] > 0]
-subset = subset.loc[censo['EDADPAD'] > 0]
+subset = censo.loc[censo['SEXO'] == 6]
+subset = subset.loc[censo['TESTUD'] == 5]
 
-usadas = ['EDAD', 'ESREAL', 'CMUNN', 'ESTUMAD', 'ESTUPAD']
+usadas = ['EDAD', 'CODTRABA', 'CMUNN', 'TDESP', 'ESTUCON']
 X = subset[usadas]
 X_norm = X.apply(norm_to_zero_one)
-caso = "Caso1"
+caso = "Caso2"
+
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
 print("kMeans")
-#km.kMeans(X,X_norm,caso)
+km.kMeans(X,X_norm,caso)
 
 # MEAN SHIFT
 print("Mean Shift")
-#ms.meanshift(X,X_norm,caso)
+ms.meanshift(X,X_norm,caso)
 
 # BIRCH
 print("Birch")
-#br.birch(X,X_norm,4,caso)
+br.birch(X,X_norm,4,caso)
 
 # DBSCAN
 print("DBSCAN")
-#db.dbscan(X,X_norm,0.2,50,caso)
+db.dbscan(X,X_norm,0.2,50,caso)
 
 # CLUSTERING JERÁRQUICO. WARD
 print("Clustering jerárquico. Ward")

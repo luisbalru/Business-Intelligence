@@ -24,11 +24,13 @@ import seaborn as sns
 
 
 def birch(dataset,dataset_norm,num_clusters,caso):
+    if(not(os.path.isdir("./resultados/"+caso+"/BIRCH"))):
+        os.mkdir("./resultados/"+caso+"/BIRCH")
     br = Birch(n_clusters = num_clusters)
     t = time.time()
     labels = br.fit_predict(dataset_norm)
     tiempo = time.time() - t
-    f = open("./resultados/"+caso+"/birch.txt","w")
+    f = open("./resultados/"+caso+"/BIRCH/birch.txt","w")
     f.write("Ejecutando BIRCH")
     f.write(": {:.2f} segundos, ".format(tiempo))
     metric_CH = metrics.calinski_harabaz_score(dataset_norm, labels)
@@ -59,7 +61,7 @@ def birch(dataset,dataset_norm,num_clusters,caso):
 
     ax = sns.heatmap(centers, cmap="YlGnBu", annot=centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
-    figure.savefig("./resultados/"+caso+"/heatmap-br.png", dpi=400)
+    figure.savefig("./resultados/"+caso+"/BIRCH/heatmap-br.png", dpi=400)
 
     X_birch = pd.concat([dataset,clusters],axis=1)
     sns.set()
@@ -67,7 +69,7 @@ def birch(dataset,dataset_norm,num_clusters,caso):
     variables.remove('cluster')
     sns_plot = sns.pairplot(X_birch, vars = variables, hue="cluster")
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03);
-    sns_plot.savefig("./resultados/"+caso+"/birch.png")
+    sns_plot.savefig("./resultados/"+caso+"/BIRCH/birch.png")
 
 
 

@@ -24,6 +24,8 @@ from itertools import cycle
 import seaborn as sns
 
 def dbscan(dataset,dataset_norm,eps,min_samples,caso):
+    if(not(os.path.isdir("./resultados/"+caso+"/DBSCAN"))):
+        os.mkdir("./resultados/"+caso+"/DBSCAN")
     t = time.time()
     db = DBSCAN(eps=eps,min_samples=min_samples).fit(dataset_norm)
     labels = db.labels_
@@ -32,7 +34,7 @@ def dbscan(dataset,dataset_norm,eps,min_samples,caso):
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
 
-    f = open("./resultados/"+caso+"/dbscan.txt","w")
+    f = open("./resultados/"+caso+"/DBSCAN/dbscan.txt","w")
     f.write("Ejecutando DBSCAN")
     f.write(": {:.2f} segundos, ".format(tiempo))
     metric_CH = metrics.calinski_harabaz_score(dataset_norm, labels)
@@ -69,7 +71,7 @@ def dbscan(dataset,dataset_norm,eps,min_samples,caso):
 
     ax = sns.heatmap(centers, cmap="YlGnBu", annot=centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
-    figure.savefig("./resultados/"+caso+"/heatmap-dbscan.png", dpi=400)
+    figure.savefig("./resultados/"+caso+"/DBSCAN/heatmap-dbscan.png", dpi=400)
 
     X_DBSCAN = pd.concat([dataset,clusters],axis=1)
     X_DBSCAN = X_DBSCAN[X_DBSCAN.cluster != -1]
@@ -78,7 +80,7 @@ def dbscan(dataset,dataset_norm,eps,min_samples,caso):
     variables.remove('cluster')
     sns_plot = sns.pairplot(X_DBSCAN, vars = variables, hue="cluster")
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03);
-    sns_plot.savefig("./resultados/"+caso+"/dbscan.png")
+    sns_plot.savefig("./resultados/"+caso+"/DBSCAN/dbscan.png")
 
 
 
