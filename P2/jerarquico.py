@@ -14,6 +14,7 @@ Contenido:
 import time
 
 import pandas as pd
+import os
 import numpy as np
 
 from sklearn import cluster
@@ -31,7 +32,8 @@ def norma_to_zero_one(df):
 def agglomerativeClustering(X,num_clusters,caso):
     if(not(os.path.isdir("./resultados/"+caso+"/Jerarquico"))):
         os.mkdir("./resultados/"+caso+"/Jerarquico")
-    X = X.sample(1000, random_state=77145416)
+    if(len(X) > 1000):
+        X = X.sample(1000, random_state=77145416)
     X_norm = X.apply(norma_to_zero_one)
     ward = cluster.AgglomerativeClustering(n_clusters = num_clusters, linkage='ward')
     name, algorithm = ('Ward', ward)
@@ -51,6 +53,8 @@ def agglomerativeClustering(X,num_clusters,caso):
 
     X_filtrado = X_filtrado.drop('cluster', axis=1)
     X_filtrado_normal = X_filtrado.apply(norma_to_zero_one)
+    X_filtrado_normal = X_filtrado_normal.replace(np.NaN,0)
+    print(X_filtrado_normal)
     linkage_array = hierarchy.ward(X_filtrado_normal)
     plt.figure(1)
     plt.clf()

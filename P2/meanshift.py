@@ -14,7 +14,7 @@ Contenido:
 import time
 import numpy as np
 import pandas as pd
-
+import os
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from math import floor
@@ -52,14 +52,12 @@ def meanshift(dataset,dataset_norm,caso):
     f.close()
 
     centers = pd.DataFrame(cluster_centers,columns=list(dataset))
-    print(centers)
     centers_desnormal = centers.copy()
 
 
     for var in list(centers):
         centers_desnormal[var] = dataset[var].min() + centers[var] * (dataset[var].max() - dataset[var].min())
 
-    print(centers_desnormal)
     ax = sns.heatmap(centers, cmap="YlGnBu", annot=centers_desnormal, fmt='.3f')
     figure = ax.get_figure()
     figure.savefig("./resultados/"+caso+"/MeanShift/heatmap-ms.png", dpi=400)
@@ -70,7 +68,7 @@ def meanshift(dataset,dataset_norm,caso):
     variables.remove('cluster')
     sns_plot = sns.pairplot(X_meanshift, vars=variables, hue="cluster") #en hue indicamos que la columna 'cluster' define los colores
     sns_plot.fig.subplots_adjust(wspace=.03, hspace=.03);
-    sns_plot.savefig("./resultados/"+caso+"/Meanshift/meanshift.png")
+    sns_plot.savefig("./resultados/"+caso+"/MeanShift/meanshift.png")
 
 
 #'''

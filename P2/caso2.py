@@ -12,6 +12,7 @@ Contenido:
     Universidad de Granada
 """
 
+import os
 import pandas as pd
 import numpy as np
 import kmeans as km
@@ -19,7 +20,7 @@ import meanshift as ms
 import birch as br
 import dbscan as db
 import jerarquico as j
-import os
+
 
 def norm_to_zero_one(df):
     return (df - df.min()) * 1.0 / (df.max() - df.min())
@@ -41,20 +42,20 @@ caso = "Caso2"
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
 print("kMeans")
-km.kMeans(X,X_norm,caso)
+#km.kMeans(X,X_norm,caso)
 
 # MEAN SHIFT
 print("Mean Shift")
-ms.meanshift(X,X_norm,caso)
+#ms.meanshift(X,X_norm,caso)
 
 # BIRCH
 print("Birch")
-br.birch(X,X_norm,4,caso)
+#br.birch(X,X_norm,7,caso)
 
 # DBSCAN
 print("DBSCAN")
-db.dbscan(X,X_norm,0.2,50,caso)
+#db.dbscan(X,X_norm,0.5,50,caso)
 
 # CLUSTERING JERÁRQUICO. WARD
 print("Clustering jerárquico. Ward")
-j.agglomerativeClustering(X,100,caso)
+#j.agglomerativeClustering(X,100,caso)

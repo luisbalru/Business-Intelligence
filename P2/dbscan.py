@@ -15,7 +15,7 @@ Contenido:
 import time
 import numpy as np
 import pandas as pd
-
+import os
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 import matplotlib.pyplot as plt
@@ -55,12 +55,7 @@ def dbscan(dataset,dataset_norm,eps,min_samples,caso):
 
     X_DBSCAN = pd.concat([dataset_norm,clusters],axis=1)
     X_DBSCAN = X_DBSCAN[X_DBSCAN.cluster != -1]
-    edad = X_DBSCAN.groupby(['cluster'])['EDAD'].mean()
-    esreal = X_DBSCAN.groupby(['cluster'])['ESREAL'].mean()
-    cmunn = X_DBSCAN.groupby(['cluster'])['CMUNN'].mean()
-    estumad = X_DBSCAN.groupby(['cluster'])['ESTUMAD'].mean()
-    estupad = X_DBSCAN.groupby(['cluster'])['ESTUPAD'].mean()
-    cluster_centers = pd.concat([edad,esreal,cmunn,estumad,estupad],axis=1)
+    cluster_centers = X_DBSCAN.groupby('cluster').mean()
 
     centers = pd.DataFrame(cluster_centers,columns=list(dataset))
     centers_desnormal = centers.copy()

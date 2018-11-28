@@ -14,7 +14,7 @@ Contenido:
 import time
 import numpy as np
 import pandas as pd
-
+import os
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from math import floor
@@ -45,12 +45,7 @@ def birch(dataset,dataset_norm,num_clusters,caso):
         f.write('%s: %5d (%5.2f%%)' % (num,i,100*i/len(clusters))+"\n")
     f.close()
     X_birch = pd.concat([dataset_norm,clusters],axis=1)
-    edad = X_birch.groupby(['cluster'])['EDAD'].mean()
-    esreal = X_birch.groupby(['cluster'])['ESREAL'].mean()
-    cmunn = X_birch.groupby(['cluster'])['CMUNN'].mean()
-    estumad = X_birch.groupby(['cluster'])['ESTUMAD'].mean()
-    estupad = X_birch.groupby(['cluster'])['ESTUPAD'].mean()
-    cluster_centers = pd.concat([edad,esreal,cmunn,estumad,estupad],axis=1)
+    cluster_centers = X_birch.groupby('cluster').mean()
 
     centers = pd.DataFrame(cluster_centers,columns=list(dataset))
     centers_desnormal = centers.copy()

@@ -1,0 +1,10 @@
+Ejecutando MeanShift: 0.04 segundos, 
+Número estimado de clusters: 5 
+Calinski-Harabaz Index: 230.589, 
+Silhouette Coefficient: 0.47819
+Tamaño de cada cluster:
+0:   147 (34.19%)
+1:   138 (32.09%)
+2:    70 (16.28%)
+4:    38 ( 8.84%)
+3:    37 ( 8.60%)

@@ -1,0 +1,15 @@
+Ejecutando DBSCAN: 0.00 segundos, Calinski-Harabaz Index: 248.475, 
+Silhouette Coefficient: 0.56046
+Epsilon: 0.300000 
+Min_samples: 30 
+Número estimado de clusters: 7
+Número estimado de puntos ruidosos: 69 
+Tamaño de cada cluster:
+1:    88 (20.47%)
+0:    73 (16.98%)
+-1:    69 (16.05%)
+3:    55 (12.79%)
+4:    46 (10.70%)
+2:    36 ( 8.37%)
+5:    33 ( 7.67%)
+6:    30 ( 6.98%)

@@ -13,7 +13,7 @@ Contenido:
 """
 
 import time
-
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -41,7 +41,7 @@ def kMeans(dataset,dataset_norm,caso):
     if(not(os.path.isdir("./resultados/"+caso+"/kMeans"))):
         os.mkdir("./resultados/"+caso+"/kMeans")
     ElbowMethod(dataset_norm)
-    n_cl = print("Indica el número de clusters: ")
+    n_cl = input("Indica el número de clusters: ")
     n_cl = int(n_cl)
     k_means = KMeans(init='k-means++', n_clusters=n_cl)
     t = time.time()
