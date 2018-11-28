@@ -1,0 +1,6 @@
+Ejecutando k-means: 0.11 segundos, Calinski-Harabaz Index: 2603.859, 
+Silhouette Coefficient: 0.30264
+Tamaño de cada cluster:
+0:  2139 (37.46%)
+2:  1792 (31.38%)
+1:  1779 (31.16%)

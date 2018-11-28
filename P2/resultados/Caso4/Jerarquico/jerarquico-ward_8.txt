@@ -1,0 +1,11 @@
+Ejecutando Clustering Aglomerativo: k:   8, 
+  0.04 segundos
+4:   188 (18.80%)
+1:   156 (15.60%)
+3:   154 (15.40%)
+0:   148 (14.80%)
+5:    95 ( 9.50%)
+7:    93 ( 9.30%)
+6:    91 ( 9.10%)
+2:    75 ( 7.50%)
+De los 8 clusters hay 38 con más de 10 elementos. Del total de 1000 elementos, se seleccionan 582

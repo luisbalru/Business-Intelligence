@@ -1,0 +1,5 @@
+Ejecutando BIRCH: 0.22 segundos, Calinski-Harabaz Index: 2698.105, 
+Silhouette Coefficient: 0.33890
+Tamaño de cada cluster:
+1:  3877 (67.90%)
+0:  1833 (32.10%)

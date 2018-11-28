@@ -31,7 +31,7 @@ censo = pd.read_csv('./data/censo_granada.csv')
 censo = censo.replace(np.NaN,0)
 
 subset = censo.loc[censo['SEXO'] == 6]
-subset = subset.loc[censo['TAREA'] == 1]
+subset = subset.loc[censo['TAREA4'] == 1]
 subset = subset.loc[censo['JORNADA'] == 1]
 
 usadas = ['EDAD', 'NHIJOS', 'ESREAL', 'TDESP', 'EDADCON']
@@ -42,19 +42,19 @@ caso = "Caso4"
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
 print("kMeans")
-km.kMeans(X,X_norm,caso)
+#km.kMeans(X,X_norm,caso)
 
 # MEAN SHIFT
 print("Mean Shift")
-ms.meanshift(X,X_norm,caso)
+#ms.meanshift(X,X_norm,caso)
 
 # BIRCH
 print("Birch")
-br.birch(X,X_norm,4,caso)
+#br.birch(X,X_norm,4,caso)
 
 # DBSCAN
 print("DBSCAN")
-db.dbscan(X,X_norm,0.2,50,caso)
+#db.dbscan(X,X_norm,0.15,20,caso)
 
 # CLUSTERING JERÁRQUICO. WARD
 print("Clustering jerárquico. Ward")

@@ -54,7 +54,6 @@ def agglomerativeClustering(X,num_clusters,caso):
     X_filtrado = X_filtrado.drop('cluster', axis=1)
     X_filtrado_normal = X_filtrado.apply(norma_to_zero_one)
     X_filtrado_normal = X_filtrado_normal.replace(np.NaN,0)
-    print(X_filtrado_normal)
     linkage_array = hierarchy.ward(X_filtrado_normal)
     plt.figure(1)
     plt.clf()
