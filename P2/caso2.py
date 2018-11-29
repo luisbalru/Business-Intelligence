@@ -42,7 +42,7 @@ caso = "Caso2"
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
 print("kMeans")
-#km.kMeans(X,X_norm,caso)
+km.kMeans(X,X_norm,caso)
 
 # MEAN SHIFT
 print("Mean Shift")

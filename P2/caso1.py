@@ -56,4 +56,4 @@ print("DBSCAN")
 
 # CLUSTERING JERÁRQUICO. WARD
 print("Clustering jerárquico. Ward")
-#j.agglomerativeClustering(X,100,caso)
+j.agglomerativeClustering(X,100,caso)
