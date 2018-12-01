@@ -294,11 +294,12 @@ Me dispongo ahora a analizar la situación de las mujeres científicas en la pro
 \end{figure}
 
 He de señalar que este caso tiene un tamaño muy reducido (430 instancias), lo que indica la situación de la ingeniería/arquitectura en 2011 con respecto a la mujer en Granada.
+
 \subsection{kMeans}
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.5]{em-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\includegraphics[scale=0.4]{em-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
 	\caption{Elbow Method caso 2} 
 	\label{fig:em-caso2}
 \end{figure}
@@ -319,7 +320,7 @@ Se hace por tanto evidente la conveniencia de elegir 8 clusters.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.8]{heatmap-km-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\includegraphics[scale=0.65]{heatmap-km-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
 	\caption{Heatmap kMeans Caso 2} 
 	\label{fig:hm-km-caso2}
 \end{figure}
@@ -331,8 +332,135 @@ Se hace por tanto evidente la conveniencia de elegir 8 clusters.
 	\label{fig:sc-km-caso2}
 \end{figure}
 
+Vemos que hay grandes diferencias en el código postal del lugar de trabajo, cosa que afecta al tiempo de desplazamiento y relacionada con el código del municipio donde viven. También vemos que hay 4 clusters de mujeres que conviven con sus cónyuges y otras 4 que no conviven o están solteras/divorciadas/separadas. La horquilla de edad va de 30 a 43 años. Como se puede ver en el scatter matrix, el tiempo de desplazamiento está prácticamente idénticamente distribuido por edades y que las mujeres que no viven con sus cónyuges están claramente definidas por la edad, siendo personas entre 30 y 35 años. Al parecer, en Granada de las mujeres ingenieras es que formalizan una vida en común con otra persona a partir de los 35 años (quizá por la dilación en los estudios o la precariedad laboral asociada a la ciencia en Granada). Además, vemos una gran brecha entre mujeres que viven en localidades poco habitadas (entre 2000 y 5000 personas) y mujeres que viven en localidades muy pobladas. Sin embargo, no presenta correlación con la edad de las susodichas. 
 
+\subsection{MeanShift}
 
+En este caso, el resultado de MeanShift propone establecer cinco clusters:
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño de los clusters                                                                                                                         \\ \hline
+		5           & 0.04  & 0.47819   & 230.589          & \begin{tabular}[c]{@{}c@{}}0:   147 (34.19\%)\\ 1:   138 (32.09\%)\\ 2:    70 (16.28\%)\\ 4:    38 ( 8.84\%)\\ 3:    37 ( 8.60\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+Como se puede apreciar, el valor de las métricas es menor que los resultados de 6 y 8 clusters estudiados anteriormente, lo que generará una menor claridad en las relaciones entre variables (a priori).
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{heatmap-ms2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap MeanShift Caso 2} 
+	\label{fig:hm-ms-caso2}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{meanshift2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter MeanShift Caso 2} 
+	\label{fig:sc-ms-caso2}
+\end{figure}
+
+MeanShift polariza de nuevo mucho entre mujeres que trabajan en sitios muy poblados y poco poblados, habiendo correlación entre trabajar en sitio poco poblados y vivir también en lugares despoblados. Ello acarrea un mayor tiempo de desplazamiento  (salvo en el cluster 1, que hay una excepción). Por otra parte, señala que la mayoría de las mujeres científicas viven con su cónyuge excepto el cluster 3 (a diferencia de kMeans) y gradúa la formación de dichos cónyuges de forma que las mujeres mayores de la población de estudio (43 años y medios) tienen las parejas más formadas.
+\newpage
+
+\subsection{BIRCH}
+
+Los resultados de BIRCH para este caso son los siguientes:
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño de los clusters                                                                                                                                                                   \\ \hline
+		4           & 0.02  & 0.46699   & 247.660          & \begin{tabular}[c]{@{}c@{}}1:   147 (34.19\%)\\ 2:   138 (32.09\%)\\ 0:    73 (16.98\%)\\ 3:    72 (16.74\%)\end{tabular}                                                                \\ \hline
+		5           & 0.02  & 0.47819   & 230.906          & \begin{tabular}[c]{@{}c@{}}1:   147 (34.19\%)\\ 0:   138 (32.09\%)\\ 3:    72 (16.74\%)\\ 4:    38 ( 8.84\%)\\ 2:    35 ( 8.14\%)\end{tabular}                                           \\ \hline
+		7           & 0.04  & 0.64965   & 454.423          & \begin{tabular}[c]{@{}c@{}}2:    92 (21.40\%)\\ 0:    75 (17.44\%)\\ 3:    72 (16.74\%)\\ 6:    63 (14.65\%)\\ 1:    55 (12.79\%)\\ 4:    38 ( 8.84\%)\\ 5:    35 ( 8.14\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+Como se puede ver, se tiende a 7-8 clusters, como ya recomendaba Elbow Method de kMeans. En particular, BIRCH encuentra 7 subclusters así que no contempla un número mayor. Como 7 es el mejor de los resultados, muestro sus gráficos.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.65]{heatmap-br-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap BIRCH Caso 2} 
+	\label{fig:hm-br-caso2}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{birch2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter BIRCH Caso 2} 
+	\label{fig:sc-br-caso2}
+\end{figure}
+
+Con este resultado se recupera la distinción entre mujeres de entre 30 y 35 años que no conviven con sus cónyuges y las demás. Se vuelve a enfatizar que la formación de dichos cónyuges es menor que la de ellas y que la mayoría no tienen que emplear mucho tiempo para ir al trabajo, siendo las que más tiempo necesitan aquellas que trabajan en lugares con poca población, probablemente lejos de la capital o grandes núcleos de población (aquellas que viven en lugares con más de 20000 habitantes registran los desplazamientos más largos (cluster 0 y 6)).
+
+\newpage
+
+\subsection{DBSCAN}
+
+Como en el caso anterior y los siguientes, juego con los parámetros epsilon y min\_samples para ver cuál es la combinación óptima:
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                              \\ \hline
+		8           & 0.01  & 0.3     & 10           & 0.68578   & 426.905          & \begin{tabular}[c]{@{}c@{}}2:    92 (21.40\%)\\ 0:    74 (17.21\%)\\ 1:    58 (13.49\%)\\ 7:    55 (12.79\%)\\ 5:    37 ( 8.60\%)\\ 3:    36 ( 8.37\%)\\ 4:    34 ( 7.91\%)\\ 6:    32 ( 7.44\%)\\ -1:    12 ( 2.79\%)\end{tabular} \\ \hline
+		7           & 0.01  & 0.3     & 30           & 0.56046   & 248.475          & \begin{tabular}[c]{@{}c@{}}1:    88 (20.47\%)\\ 0:    73 (16.98\%)\\ -1:    69 (16.05\%)\\ 3:    55 (12.79\%)\\ 4:    46 (10.70\%)\\ 2:    36 ( 8.37\%)\\ 5:    33 ( 7.67\%)\\ 6:    30 ( 6.98\%)\end{tabular}                      \\ \hline
+		7           & 0.01  & 0.2     & 15           & 0.51824   & 173.297          & \begin{tabular}[c]{@{}c@{}}-1:    97 (22.56\%)\\ 2:    77 (17.91\%)\\ 0:    69 (16.05\%)\\ 3:    51 (11.86\%)\\ 5:    42 ( 9.77\%)\\ 6:    33 ( 7.67\%)\\ 1:    33 ( 7.67\%)\\ 4:    28 ( 6.51\%)\end{tabular}                      \\ \hline
+		4           & 0.01  & 0.5     & 50           & 0.48033   & 222.619          & \begin{tabular}[c]{@{}c@{}}-1:   149 (34.65\%)\\ 2:    92 (21.40\%)\\ 0:    74 (17.21\%)\\ 1:    60 (13.95\%)\\ 3:    55 (12.79\%)\end{tabular}                                                                                     \\ \hline
+	\end{tabular}
+\end{table}
+
+Como se puede ver, para las parejas (epsilon,min\_samples) = (0.3,30) y (0.2,15) se obtienen el mismo número de clusters pero las métricas arrojan resultados distintos. Esto indica que, a pesar de formar el mismo número de clusters, la inclusión de instancias en unos u otros es más acertada con la configuración primera. Por otra parte, el mejor resultado se obtiene con 8 clusters (0.3,10). 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.465]{heatmap-dbscan2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap DBSCAN Caso 2} 
+	\label{fig:hm-db-caso2}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{dbscan2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter DBSCAN Caso 2} 
+	\label{fig:sc-db-caso2}
+\end{figure}
+
+Según podemos observar, el resultado indica que las mujeres más jóvenes (29-35 años) no conviven con sus cónyuges y que el resto sí, cuyos niveles de formación llegan a tercer grado (los más altos). Sorprendentemente la relación entre estudio de los cónyuges y municipio donde viven están muy polarizada, como si se estableciera la vivienda prácticamente en función de los estudios de la pareja. Por otra parte, vemos gran correlación entre el lugar donde vive y el lugar donde trabaja, estando los clusters muy separados. En este sentido, las mujeres de 43 años trabajan y viven en lugares con poca población (aunque por el tiempo de desplazamiento, no parece que sea el mismo núcleo), mientras que las mujeres de alrededor de 30 años viven en lugares con poca población y trabajan en lugares con mucha que están realmente cerca (el centro y algún pueblo cercano tipo Cenes de la Vega, Huétor-Vega o Cájar).
+
+\subsection{Aglomerativo}
+
+Lo primero que es llamativo para este algoritmo es el número de instancias que tenemos. En general se hace una disminución en pos del rendimiento. Sin embargo, en este caso no hace falta debido a que hay 430 instancias. Esto es una muestra de la situación minoritaria de mujeres ingenieras en Granada en 2011. Por tanto, como en los demás casos, elimino outliers y se obtiene el siguiente dendograma:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.7]{dendograma2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Dendograma clustering jerárquico caso 2} 
+	\label{fig:dg-caso2}
+\end{figure}
+
+A raíz del dendograma, elijo 10 como el número de clusters a estudiar, obteniendo
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Nº Clusters & Tiempo(s) & Tamaño de los clusters                                                                                                                         \\ \hline
+		10           & 0.01      & \begin{tabular}[c]{@{}c@{}}0:    92 (21.40\%) \\
+			2:    55 (12.79\%) \\
+			4:    54 (12.56\%) \\
+			3:    42 ( 9.77\%) \\
+			1:    38 ( 8.84\%) \\
+			7:    36 ( 8.37\%) \\
+			5:    36 ( 8.37\%) \\
+			6:    35 ( 8.14\%) \\
+			8:    33 ( 7.67\%)\\
+			9:     9 ( 2.09\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
 
 \newpage
 
