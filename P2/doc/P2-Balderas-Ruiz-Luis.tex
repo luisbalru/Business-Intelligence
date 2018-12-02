@@ -1,4 +1,5 @@
 \input{preambuloSimple.tex}
+\usepackage{graphicx}
 \graphicspath{ {./images/} }
 
 %----------------------------------------------------------------------------------------
@@ -31,8 +32,7 @@
 \tableofcontents % para generar el índice de contenidos
 	
 \listoffigures
-	
-\listoftables
+
 	
 \newpage
 
@@ -56,7 +56,7 @@ El presente estudio estadístico se centra en cuatro casos:
 	\item Caso 4: Mujeres y hogar.
 \end{itemize}
 
-Dichos casos se enfrentarán mediante técnicas de clustering. Más concretamente, a través de 4 algoritmos basados en particionamiento, como son kMeans (\cite{kmeans}), MeanShift (\cite{ms}), BIRCH (\cite{birch}, \cite{zhang1996birch}) y DBSCAN (\cite{dbscan}); y uno jerárquico aglomerativo tipo Ward (\cite{ward}). Su análisis se apoya en datos de rendimiento como gráficos tipo \textit{scatter matrix, heatmap o dendograma}, según el algoritmo. Además, los algoritmos basados en particionamiento se evaluarán a través de las métricas \textit{Silhouette} y \textit{Calinski-Harabaz}. \\
+Dichos casos se enfrentarán mediante técnicas de clustering (\cite{jain1988algorithms}). Más concretamente, a través de 4 algoritmos basados en particionamiento, como son kMeans (\cite{kmeans}), MeanShift (\cite{ms}), BIRCH (\cite{birch}, \cite{zhang1996birch}) y DBSCAN (\cite{dbscan}); y uno jerárquico aglomerativo tipo Ward (\cite{ward}) (las comparaciones en \cite{steinbach2000comparison}). Su análisis se apoya en datos de rendimiento como gráficos tipo \textit{scatter matrix, heatmap o dendograma}, según el algoritmo. Además, los algoritmos basados en particionamiento se evaluarán a través de las métricas \textit{Silhouette} y \textit{Calinski-Harabaz}. A parte de los citados artículos, me baso en el material de teoría de la asignatura y en los libros \cite{data_mining_book} y \cite{fb_book}. \\
 
 Por último, es necesario reseñar que por propia definición, algunos algoritmos requieren la especificación del número de clusters a formar, mientras que otros, dados ciertos parámetros, muestran el número de cluster óptimo asociado a dicha configuración. He probado distintas configuraciones de cada algoritmo (se especificarán en cada apartado), pero en el caso de kMeans utilizo el llamado \textit{Elbow Method} para elegir el número óptimo de clusters (\cite{elbow-method}, \cite{elbow-method1}).
 
@@ -446,6 +446,7 @@ Lo primero que es llamativo para este algoritmo es el número de instancias que 
 A raíz del dendograma, elijo 10 como el número de clusters a estudiar, obteniendo
 
 \begin{table}[H]
+	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
 		Nº Clusters & Tiempo(s) & Tamaño de los clusters                                                                                                                         \\ \hline
@@ -819,6 +820,58 @@ Así como en MeanShift, el mejor resultado se da englobando todos los casos en u
 	\label{fig:sc-db-caso4}
 \end{figure}
 
+Se puede observar en el scatter matrix que los dos clusters están bien diferenciados en el número de hijos. Mientras la mayoría de las mujeres del cluster 0 no llega a un hijo en media, el pico para el cluster 1 se sitúa en dos hijos. Por otra parte, en relación con los estudios y la edad, las mujeres que tienen más formación están entre los 25 y los 50 años. No parece haber mujeres que trabajen mayores de 50 años con más formaciones profesionales reguladas. Los valores se acumulan entorno al número 2 en ESREAL, lo que indica que apenas fueron al colegio. En cuanto al tiempo de desplazamiento, la mayoría es cercano a 0 o niveles bajos, lo que indica que las mujeres en este caso trabajan cerca de casa. Además, de entre las que cohabitan con sus cónyuges, vuelve a verse una correlación entre la formación del cónyuge y su edad, aunque difusa y escalada. Se puede ver como las mujeres que tienen muchos hijos (5 y especialmente 6) son pocas y además tienen una formación media.
+
+\newpage
+
+\subsection{Aglomerativo}
+
+Tras eliminar outliers con un clustering aglomerativo de 100 grupos, examino el dendograma para elegir el número verdadero de clusters.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.65]{dg4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Dendograma del caso 4}
+	\label{fig:dg4}
+\end{figure}
+
+No consigo extraer un número adecuado de clusters así que he jugado con los siguientes casos:
+
+\begin{table}[H]
+	\centering
+	\resizebox{6cm}{!}{
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Tamaño                                                                                                                                                                                                        \\ \hline
+		4           & 0.03  & \begin{tabular}[c]{@{}c@{}}0:   354 (35.40\%)\\ 2:   342 (34.20\%)\\ 3:   156 (15.60\%)\\ 1:   148 (14.80\%)\end{tabular}                                                                                     \\ \hline
+		6           & 0.03  & \begin{tabular}[c]{@{}c@{}}2:   247 (24.70\%)\\ 4:   188 (18.80\%)\\ 0:   166 (16.60\%)\\ 3:   156 (15.60\%)\\ 1:   148 (14.80\%)\\ 5:    95 ( 9.50\%)\end{tabular}                                           \\ \hline
+		8           & 0.04  & \begin{tabular}[c]{@{}c@{}}4:   188 (18.80\%)\\ 1:   156 (15.60\%)\\ 3:   154 (15.40\%)\\ 0:   148 (14.80\%)\\ 5:    95 ( 9.50\%)\\ 7:    93 ( 9.30\%)\\ 6:    91 ( 9.10\%)\\ 2:    75 ( 7.50\%)\end{tabular} \\ \hline
+	\end{tabular}
+	}
+\end{table}
+
+Según los porcentajes, cuando se definen 6  clusters los tamaños de los mismos se asemejan más entre sí que en los otros casos. Por tanto, elijo 6 como el número de clusters.
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{clustermap4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Clustermap cluster jerárquico Caso 4} 
+	\label{fig:clustermap-caso4}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.7]{heatmap-jerarquico4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap cluster jerárquico Caso 4} 
+	\label{fig:heatmapj-caso4}
+\end{figure}
+
+Según estos resultados, hay mujeres de alrededor de 43 años con estudios menores que bachillerato y que no habitan con su cónyuge y otras de 45 años con estudios superiores universitarios que tampoco. Curiosamente estás últimas son las que menos hijos en media tienen. El resto viven con sus cónyuges, cuyas edades se asemejan bastante a la de sus mujeres. El número de hijos se centra entre 1 y 2 y el tiempo de desplazamiento suele ser leve salvo en el caso de las mujeres de 34 años y 51, que tardan algo más de media hora en desplazarse. 
+
+\subsection{Interpretación de la segmentación}
+
+A la luz de los distintos resultados, podemos inferir que la mujer trabajadora y que se ocupa mayormente de las tareas de la casa es de mediana edad (35-50 años). Hemos visto que la relación entre nivel de estudios y número de hijos es inversamente proporcional, lo que puede reflejar la dificultad actual en la conciliación laboral y familiar. También se ha reflejado que las más formadas no viven con sus cónyuges y en la mayoría de las ocasiones su tiempo de desplazamiento es mayor, lo que puede indicar que, debido a su formación, tienen que desplazarse a empresas más lejos de sus viviendas, mientras que las mujeres menos formadas trabajan en su localidad o en zonas muy cercanas.  Otro dato interesante es que el número de mujeres en este caso son 5710. Muchas más habrá que trabajen a tiempo parcial por ocuparse principalmente de las tareas domésticas. Estos datos indican que en 2011 en Granada las mujeres se veían más atadas a los quehaceres de casa más que sus cónyuges por lo que la conciliación entre su vida laboral y personal se dificulta. Revertir esta situación sería trascendental en nuestra provincia en términos económicos y de igualdad.
 \newpage
 \section{Bibliografía}
 
