@@ -462,16 +462,362 @@ A raíz del dendograma, elijo 10 como el número de clusters a estudiar, obtenie
 	\end{tabular}
 \end{table}
 
+Se obtienen las siguientes gráficas:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.7]{heatmap-jerarquico2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap jerárquico caso 2} 
+	\label{fig:heatmap-jerarq-caso2}
+\end{figure}
+
+La distinción en más clusters nos hace ver un grupo de científicas que emplean gran tiempo en ir a trabajar. Los demás resultados son parecidos a los ya comentados.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{clustermap2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Clustermap jerárquico caso 2} 
+	\label{fig:clustermap-caso2}
+\end{figure}
+
+\subsection{Interpretación de la segmentación}
+
+Tras el estudio realizado, lo primero reseñable es el número de instancias que se poseen. Sólo 430 mujeres fueron censadas en 2011 como ingenieras o arquitectas. La horquilla de edad es aproximadamente entre 30 y 43 años. La mayoría de ellas viven y trabajan en una localidad de más de 20000 habitantes, aunque también se alternan municipios con menos población (entre 2000 y 5000). Podemos ver que aquellas entre 30 y 35 años aún no conviven con sus cónyuges. A partir de los 35 la tendencia cambia. Dichos cónyuges responden a un patrón de persona con formación alta (entorno al tercer grado) y en ciertas gráficas se encuentra correlación entre la formación del cónyuge y su domicilio. Cómo se ha visto, se antoja 8 como número óptimo de clusters. 
+
 \newpage
 
-%----------------------------------------------------------------------------------------
-%	Contenido adicional
-%----------------------------------------------------------------------------------------
+\section{Caso de estudio 3: Hogares biparentales con hijos menores de 25 años}
 
-\section{Contenido adicional}
+El siguiente caso que me ocupa es el estudio de hogares biparentales con hijos menores de 25 años. Para ello, impongo \textit{ESTHOG==08} e \textit{HIJOS<=25}. Además, utilizo las siguientes características:
+
+\begin{itemize}
+	\item NPFAM
+	\item H6584
+	\item ANOCONS
+	\item ESTADO
+	\item DIFEDAD
+	\item CMUNN
+\end{itemize}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{capt4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Configuración caso 3} 
+	\label{fig:conf-caso3}
+\end{figure}
 
 
+\subsection{kMeans}
 
+Como en los casos anteriores, comprobamos el resultado que ofrece Elbow Method.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.61]{em-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Salida de Elbow Methow} 
+	\label{fig:em-caso3}
+\end{figure}
+
+
+Como se puede ver, Elbow Method indica que 2 es el número de clusters más interesante.
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                    \\ \hline
+		2           & 0.11  & 0.61423   & 74160.226        & \begin{tabular}[c]{@{}c@{}}0: 18941 (50.58\%)\\ 1: 18505 (49.42\%)\end{tabular}                                           \\ \hline
+		4           & 0.34  & 0.478221  & 39081.008        & \begin{tabular}[c]{@{}c@{}}0: 18160 (48.50\%)\\ 1: 12766 (34.09\%)\\ 3:  5809 (15.51\%)\\ 2:   711 ( 1.90\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.65]{heatmap-km-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap kMeans Caso 3} 
+	\label{fig:hm-km-caso3}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{kmeans-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter kMeans Caso 3} 
+	\label{fig:sc-km-caso3}
+\end{figure}
+
+A la luz de los resultados, la característica determinante entre los dos grupos es el municipio donde viven. Por lo demás, la mayoría tienen 4 personas en la familia y ningún mayor de entre 65 y 84 años en la casa. El estado del edificio suele ser bueno (entorno a 4). Por otra parte, el scatter matrix indica que las casas donde viven personas mayores suelen ser más nuevas. Asimismo, el hombre del núcleo suele ser entre 1 y 4 años mayor que la mujer, estando esta característica homogéneamente distribuida entre todas las demás.
+
+\subsection{MeanShift}
+
+Examino ahora los resultados dados por MeanShift en este caso. Primeramente, veamos sus estadísticas:
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                                                                                                                                                                                                            \\ \hline
+		17          & 3.85  & 0.35109   & 7656.987         & \begin{tabular}[c]{@{}c@{}}1: 17931 (47.88\%)\\ 0: 17564 (46.90\%)\\ 3:   451 ( 1.20\%)\\ 2:   425 ( 1.13\%)\\ 4:   257 ( 0.69\%)\\ 5:   234 ( 0.62\%)\\ 8:   229 ( 0.61\%)\\ 9:   170 ( 0.45\%)\\ 13:    84 ( 0.22\%)\\ 6:    54 ( 0.14\%)\\ 7:    24 ( 0.06\%)\\ 10:     6 ( 0.02\%)\\ 11:     6 ( 0.02\%)\\ 12:     5 ( 0.01\%)\\ 14:     3 ( 0.01\%)\\ 15:     2 ( 0.01\%)\\ 16:     1 ( 0.00\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+Como se puede observar, el nivel es algo desproporcionado con respecto a los resultados anteriores y las métricas reflejan valores más pobres. La interpretabilidad con 17 clusters se complica. Veamos las gráficas asociadas.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.55]{heatmap-ms3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap MeanShift Caso 3} 
+	\label{fig:hm-ms-caso3}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{meanshift3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter MeanShift Caso 3} 
+	\label{fig:sc-ms-caso3}
+\end{figure}
+
+Como se puede observar, si se relacionan las características del código del municipio y el año de construcción, los clusters se dividen en dos grupos totalmente diferenciados: núcleos con menos de 5000 habitantes y núcleos con más de 20000. En aquellos con más habitantes se distingue que las viviendas son más modernas.
+
+ \newpage
+\subsection{BIRCH}
+
+En este caso, y a la luz de los resultados de MeanShift y kMeans, decido elegir 2 clusters para configurar BIRCH.
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                          \\ \hline
+		2           & 1.15  & 0.61423   & 74160.226        & \begin{tabular}[c]{@{}c@{}}1: 18941 (50.58\%)\\ 0: 18505 (49.42\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{heatmap-br3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap BIRCH Caso 3} 
+	\label{fig:hm-br-caso3}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{birch3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter BIRCH Caso 3} 
+	\label{fig:sc-br-caso3}
+\end{figure}
+
+Los resultados obtenidos con BIRCH para dos clusters coinciden prácticamente con kMeans para dos clusters, por lo que la interpretación es la misma que hice en el apartado anterior.
+
+\newpage
+
+\subsection{DBSCAN}
+
+En DBSCAN juego con los distintos valores de epsilon y min-samples.
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                                                                                                                                                                \\ \hline
+		5           & 23.02 & 0.4     & 30           & 0.43766   & 16288.189        & \begin{tabular}[c]{@{}c@{}}3: 18654 (49.82\%)\\ 4: 18173 (48.53\%)\\ 1:   257 ( 0.69\%)\\ 0:   234 ( 0.62\%)\\ -1:    68 ( 0.18\%)\\ 2:    60 ( 0.16\%)\end{tabular}                                                                                                                                                                                                  \\ \hline
+		10          & 13.55 & 0.2     & 50           & 0.25908   & 11537.189        & \begin{tabular}[c]{@{}c@{}}2: 17454 (46.61\%)\\ 3: 16624 (44.39\%)\\ 5:   911 ( 2.43\%)\\ 6:   613 ( 1.64\%)\\ -1:   512 ( 1.37\%)\\ 8:   316 ( 0.84\%)\\ 9:   302 ( 0.81\%)\\ 1:   219 ( 0.58\%)\\ 0:   199 ( 0.53\%)\\ 4:   195 ( 0.52\%)\\ 7:   101 ( 0.27\%)\end{tabular}                                                                                         \\ \hline
+		6           & 22.65 & 0.4     & 15           & 0.43626   & 13629.742        & \begin{tabular}[c]{@{}c@{}}4: 18654 (49.82\%)\\ 5: 18173 (48.53\%)\\ 1:   257 ( 0.69\%)\\ 0:   234 ( 0.62\%)\\ 2:    60 ( 0.16\%)\\ -1:    35 ( 0.09\%)\\ 3:    33 ( 0.09\%)\end{tabular}                                                                                                                                                                             \\ \hline
+		14          & 13.37 & 0.2     & 10           & 0.27210   & 8919.250         & \begin{tabular}[c]{@{}c@{}}4: 17465 (46.64\%)\\ 5: 16629 (44.41\%)\\ 9:   941 ( 2.51\%)\\ 7:   625 ( 1.67\%)\\ 10:   316 ( 0.84\%)\\ 11:   306 ( 0.82\%)\\ 1:   242 ( 0.65\%)\\ 6:   235 ( 0.63\%)\\ 0:   219 ( 0.58\%)\\ -1:   165 ( 0.44\%)\\ 8:   161 ( 0.43\%)\\ 12:    53 ( 0.14\%)\\ 2:    52 ( 0.14\%)\\ 3:    21 ( 0.06\%)\\ 13:    16 ( 0.04\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+La tabla refleja que el número de clusters óptimo en este caso es 5, es decir, (0.4,30).
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{heatmap-dbscan3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap DBSCAN Caso 3} 
+	\label{fig:hm-db-caso3}
+\end{figure}
+
+El cluster 2 revela un conjunto de hogares en los que viven al menos dos ancianos (viviendo en un municipio poco poblado) y, contradictoriamente con los resultados anteriores, las casas son las más antiguas en media (entorno a 1965). Por otra parte, la diferencia entre edades del hombre y la mujer aumentan. 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.4]{dbscan3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter DBSCAN Caso 3} 
+	\label{fig:sc-db-caso3}
+\end{figure}
+
+\subsection{Aglomerativo}
+
+Veamos el último algoritmo de este caso. Como en los anteriores, elimino outliers y estudio su dendograma:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{dg3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Dendograma del caso 3}
+	\label{fig:dg-caso3}
+\end{figure}
+
+Escojo, como consecuencia del dendograma, 15 clusters y, de los 1000 elementos, se seleccionan 674.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Tamaño                                                                                                                                                                                                                                                                                                                                                                \\ \hline
+		15          & 0.03  & \begin{tabular}[c]{@{}c@{}}2:   220 (22.00\%)\\ 4:   150 (15.00\%)\\ 5:   106 (10.60\%)\\ 1:   101 (10.10\%)\\ 0:    85 ( 8.50\%)\\ 14:    75 ( 7.50\%)\\ 6:    59 ( 5.90\%)\\ 7:    53 ( 5.30\%)\\ 12:    50 ( 5.00\%)\\ 3:    44 ( 4.40\%)\\ 13:    21 ( 2.10\%)\\ 11:    10 ( 1.00\%)\\ 8:    10 ( 1.00\%)\\ 10:     9 ( 0.90\%)\\ 9:     7 ( 0.70\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+A partir de aquí, examino los gráficos.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.38]{clustermap3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Clustermap cluster jerárquico Caso 3} 
+	\label{fig:clustermap-caso3}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.8]{heatmap-jerarquico3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap cluster jerárquico Caso 3} 
+	\label{fig:heatmapj-caso3}
+\end{figure}
+
+Los resultados arrojados por el clustering jerárquico apenas reflejan que haya mayores de 65 años viviendo en hogares como los que estudiamos. Se observan claras alternancias en los códigos de los municipios y se encuentran datos desconocidos en relación a la antigüedad de las viviendas en el cluster 8 y 9 (apenas un 1.7\% de los datos). Asimismo, el estado del edificio suele ser bueno en la mayoría de los casos. La diferencia de edad entre el hombre y la mujer se fija, siendo el hombre mayor entre 1 y 4 años.
+
+\subsection{Interpretación de la segmentación}
+
+Tras los distintos algoritmos de clustering, se encuentra que los hogares biparentales con hijos menores de 25 años suelen estar formados por 4 miembros. La mayoría de ellos viven en edificios en buen estado y con viviendas construidas en los últimos 10-15 años y tienden a ser en municipios con más de 20000 habitantes, aunque esta característica depende del algoritmo. La diferencia de edad entre el hombre y la mujer suele oscilar entre 1 y 4 años. En ocasiones, esas familias están complementadas con un anciano de entre 64 y 85 años y, más raramente, por dos ancianos de la misma edad. 
+
+\section{Caso de estudio 4: Mujeres trabajadoras y hogar}
+
+El último caso de estudio se basa en las mujeres con un trabajo  a tiempo completo que se encargan mayoritariamente de las tareas domésticas. Para extraer el subconjunto de instancias, filtro por \textit{SEXO==6}, \textit{TAREA4==1} y \textit{JORNADA==1}. Además, elijo las siguientes características:
+
+\begin{itemize}
+	\item EDAD
+	\item NHIJOS
+	\item ESREAL
+	\item TDESP
+	\item EDADCON
+\end{itemize}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{capt5.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Configuración del caso 4} 
+	\label{fig:configuración-caso4}
+\end{figure}
+
+Existen 5710 instancias de este caso.
+
+\subsection{kMeans}
+
+Como en el resto de casos, examino el resultado de Elbow Method para elegir el número de clusters en kMeans.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{em4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Salida de Elbow Methow} 
+	\label{fig:em-caso4}
+\end{figure}
+
+No es muy clara la respuesta así que examino varios casos.
+
+\begin{table}[H]
+			\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                        \\ \hline
+		2           & 0.07  & 0.33936   & 2698.856         & \begin{tabular}[c]{@{}c@{}}0:  3893 (68.18\%)\\ 1:  1817 (31.82\%)\end{tabular}                                                                                                                               \\ \hline
+		3           & 0.11  & 0.30264   & 2603.859         & \begin{tabular}[c]{@{}c@{}}0:  2139 (37.46\%)\\ 2:  1792 (31.38\%)\\ 1:  1779 (31.16\%)\end{tabular}                                                                                                          \\ \hline
+		5           & 0.16  & 0.29652   & 2232.567         & \begin{tabular}[c]{@{}c@{}}4:  1767 (30.95\%)\\ 1:  1189 (20.82\%)\\ 2:   987 (17.29\%)\\ 3:   950 (16.64\%)\\ 0:   817 (14.31\%)\end{tabular}                                                                \\ \hline
+		8           & 0.26  & 0.26421   & 1995.748         & \begin{tabular}[c]{@{}c@{}}3:   934 (16.36\%)\\ 7:   789 (13.82\%)\\ 2:   772 (13.52\%)\\ 0:   769 (13.47\%)\\ 5:   717 (12.56\%)\\ 6:   649 (11.37\%)\\ 1:   594 (10.40\%)\\ 4:   486 ( 8.51\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+Las métricas no son muy satisfactorias. Aún así, el resultado para dos clusters es el mejor, así que ese elijo.
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{heatmap-km4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap kMeans Caso 4} 
+	\label{fig:hm-km-caso4}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.38]{kmeans4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter kMeans Caso 4} 
+	\label{fig:sc-km-caso4}
+\end{figure}
+
+Las gráficas muestran mujeres algo mayores de 45 años, la mayoría con 2 hijos. Tienen una formación de grado medio o superior y la mayoría tienen un cónyuge de alrededor de 40 años, aunque el 31\% de las mujeres no convive con el cónyuge. Para aquellas que tienen cónyuge, la edad del mismo y su edad es lineal (aunque la variable EDADCON está escalada). En ambos clusters, los desplazamientos van entre 10 y 25 minutos.
+
+\subsection{MeanShift}
+
+En este caso, MeanShift no produce resultados. El algoritmo no detecta más que un cluster, luego no nos resulta útil. He aquí la demostración:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.45]{resultado-caso4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Sin resultado de MeanShift} 
+	\label{fig:sc-ms-caso4}
+\end{figure}
+
+\subsection{BIRCH}
+
+El algoritmo BIRCH encuentra como máximo 2 subgrupos así que el único resultado factible es 2 clusters.
+
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                          \\ \hline
+		2           & 0.22  & 0.3389    & 2698.105         & \begin{tabular}[c]{@{}c@{}}1:  3877 (67.90\%)\\ 0:  1833 (32.10\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{heatmap-br4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap BIRCH Caso 4} 
+	\label{fig:hm-br-caso4}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.38]{birch4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter BIRCH Caso 4} 
+	\label{fig:sc-br-caso4}
+\end{figure}
+
+Volvemos a encontrar las mismas relaciones que en kMeans de 2 clusters. Parece interesante que en el heatmap el nivel de estudios de las mujeres del cluster 0 ha subido, y lo que diferencia los dos clusters es la edad de los cónyuges. A pesar de que la media es 0.140 en el primero, realmente refleja que esas mujeres no viven con sus cónyuges. También presentan un número de hijos menor.
+
+\subsection{DBSCAN}
+
+Cambiando los valores de epsilon y min-samples obtengo los siguientes resultados.
+
+\begin{table}[H]
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                \\ \hline
+		2           & 0.29  & 0.2     & 50           & 0.33003   & 1354.290         & \begin{tabular}[c]{@{}c@{}}1:  3831 (67.09\%)\\ 0:  1713 (30.00\%)\\ -1:   166 ( 2.91\%)\end{tabular} \\ \hline
+		1           & 0.4   & 0.3     & 10           & 0.33973   & 20.495           & \begin{tabular}[c]{@{}c@{}}0:  5699 (99.81\%)\\ -1:    11 ( 0.19\%)\end{tabular}                      \\ \hline
+		2           & 0.18  & 0.15    & 20           & 0.31263   & 1329.881         & \begin{tabular}[c]{@{}c@{}}1:  3670 (64.27\%)\\ 0:  1626 (28.48\%)\\ -1:   414 ( 7.25\%)\end{tabular} \\ \hline
+	\end{tabular}
+\end{table}
+
+Así como en MeanShift, el mejor resultado se da englobando todos los casos en un mismo cluster, excepto 11 elementos ruidosos. Sin embargo, teniendo en cuenta Calinski-Harabaz, examino la pareja (0.2,50).
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.65]{heatmap-dbscan4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Heatmap DBSCAN Caso 4} 
+	\label{fig:hm-db-caso4}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.37]{dbscan4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Scatter DBSCAN Caso 4} 
+	\label{fig:sc-db-caso4}
+\end{figure}
 
 \newpage
 \section{Bibliografía}
