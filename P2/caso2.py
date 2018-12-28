@@ -37,12 +37,13 @@ subset = subset.loc[censo['TESTUD'] == 5]
 usadas = ['EDAD', 'CODTRABA', 'CMUNN', 'TDESP', 'ESTUCON']
 X = subset[usadas]
 X_norm = X.apply(norm_to_zero_one)
+print(X.shape)
 caso = "Caso2"
 
 # KMEANS
 # Para calcular el número idóneo de clusters -> tras la ejecución se puede ver que es 2
 print("kMeans")
-km.kMeans(X,X_norm,caso)
+#km.kMeans(X,X_norm,caso)
 
 # MEAN SHIFT
 print("Mean Shift")
@@ -58,4 +59,4 @@ print("DBSCAN")
 
 # CLUSTERING JERÁRQUICO. WARD
 print("Clustering jerárquico. Ward")
-#j.agglomerativeClustering(X,100,caso)
+j.agglomerativeClustering(X,100,caso)

@@ -36,6 +36,7 @@ subset = subset.loc[censo['JORNADA'] == 1]
 
 usadas = ['EDAD', 'NHIJOS', 'ESREAL', 'TDESP', 'EDADCON']
 X = subset[usadas]
+print(X.shape)
 X_norm = X.apply(norm_to_zero_one)
 caso = "Caso4"
 
