@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.decomposition import PCA
 
 def amount_tsh(X_train, X_test):
     """
@@ -34,9 +35,9 @@ def removal(X_train, X_test):
     # num_private: we will delete this column because ~99% of the values are zeros.
     # region: drop this b/c is seems very similar to region_code, though not 100% sure about this one!
     """
-    z = ['id', 'amount_tsh',  'num_private', 'wpt_name', 
-          'recorded_by', 'subvillage', 'scheme_name', 'region', 
-          'quantity', 'quality_group', 'source_type', 'payment', 
+    z = ['id', 'amount_tsh',  'num_private', 'wpt_name',
+          'recorded_by', 'subvillage', 'scheme_name', 'region',
+          'quantity', 'quality_group', 'source_type', 'payment',
           'waterpoint_type_group',
          'extraction_type_group']
     for i in z:
@@ -57,8 +58,8 @@ def removal2(X_train, X_test):
     # num_private: we will delete this column because ~99% of the values are zeros.
     # region: drop this b/c is seems very similar to region_code, though not 100% sure about this one!
     """
-    z = ['id','amount_tsh',  'num_private', 'region', 
-          'quantity', 'quality_group', 'source_type', 'payment', 
+    z = ['id','amount_tsh',  'num_private', 'region',
+          'quantity', 'quality_group', 'source_type', 'payment',
           'waterpoint_type_group',
          'extraction_type_group']
     for i in z:
@@ -114,21 +115,11 @@ def dates2(X_train, X_test):
         del X_train[z]
     return X_train, X_test
 
-def age_impute(train, test):
-    for i in [train, test]:
-        i['Age_Null_Flag'] = i['Age'].apply(lambda x: 1 if pd.isnull(x) else 0)
-    train['mean'] = train.groupby(['Name_Title', 'Pclass'])['Age'].transform('mean')
-    train['Age'] = train['Age'].fillna(train['mean'])
-    z = test.merge(train, on=['Name_Title', 'Pclass'], how='left').drop_duplicates(['PassengerId_x'])
-    test['Age'] = np.where(test['Age'].isnull(), z['mean'], test['Age'])
-    test['Age'] = test['Age'].fillna(test['Age'].mean())
-    del train['mean']
-    return train, test
 
 
 def locs(X_train, X_test):
     """
-    fill in the nulls for ['longitude', 'latitude', 'gps_height', 'population'] by using means from 
+    fill in the nulls for ['longitude', 'latitude', 'gps_height', 'population'] by using means from
     ['subvillage', 'district_code', 'basin'], and lastly the overall mean
     """
     trans = ['longitude', 'latitude', 'gps_height', 'population']
@@ -138,15 +129,15 @@ def locs(X_train, X_test):
         for i in [X_train, X_test]:
             i[z].replace(0., np.NaN, inplace = True)
             i[z].replace(1., np.NaN, inplace = True)
-        
+
         for j in ['subvillage', 'district_code', 'basin']:
-        
+
             X_train['mean'] = X_train.groupby([j])[z].transform('mean')
             X_train[z] = X_train[z].fillna(X_train['mean'])
             o = X_train.groupby([j])[z].mean()
             fill = pd.merge(X_test, pd.DataFrame(o), left_on=[j], right_index=True, how='left').iloc[:,-1]
             X_test[z] = X_test[z].fillna(fill)
-        
+
         X_train[z] = X_train[z].fillna(X_train[z].mean())
         X_test[z] = X_test[z].fillna(X_train[z].mean())
         del X_train['mean']
@@ -186,7 +177,7 @@ def dummies(X_train, X_test):
         del X_test[column]
     return X_train, X_test
 
-def meaningful(X_train, X_test):
+def meaningful(X_train, X_test,y_train):
     status = pd.get_dummies(y_train['status_group'])
     good_cols = []
     for i in X_train.columns[12:]:
@@ -198,7 +189,7 @@ def meaningful(X_train, X_test):
             good_cols.append(i)
     X_train2 = pd.concat((X_train.iloc[:, :12], X_train[good_cols]), axis = 1)
     X_test2 = pd.concat((X_test.iloc[:, :12], X_test[good_cols]), axis = 1)
-    return X_train, X_test
+    return X_train2, X_test2
 
 def lda(X_train, X_test, y_train, cols=['population', 'gps_height', 'latitude', 'longitude']):
     sc = StandardScaler()
@@ -207,6 +198,20 @@ def lda(X_train, X_test, y_train, cols=['population', 'gps_height', 'latitude', 
     lda = LDA(n_components=None)
     X_train_lda = lda.fit_transform(X_train_std, y_train.values.ravel())
     X_test_lda = lda.transform(X_test_std)
+    X_train = pd.concat((pd.DataFrame(X_train_lda), X_train), axis=1)
+    X_test = pd.concat((pd.DataFrame(X_test_lda), X_test), axis=1)
+    for i in cols:
+        del X_train[i]
+        del X_test[i]
+    return X_train, X_test
+
+def pca(X_train,X_test,y_train, cols=['population','gps_height','latitude','longitude']):
+    sc = StandardScaler()
+    X_train_std = sc.fit_transform(X_train[cols])
+    X_test_std = sc.transform(X_test[cols])
+    pca = PCA(n_components=None)
+    X_train_lda = pca.fit_transform(X_train_std, y_train.values.ravel())
+    X_test_lda = pca.transform(X_test_std)
     X_train = pd.concat((pd.DataFrame(X_train_lda), X_train), axis=1)
     X_test = pd.concat((pd.DataFrame(X_test_lda), X_test), axis=1)
     for i in cols:
@@ -247,20 +252,3 @@ def small_n2(X_train, X_test):
             if i not in X_train[column].unique():
                 X_test[column].replace(i, 'other', inplace=True)
     return X_train, X_test
-
-def cabin_num(train, test):
-    for i in [train, test]:
-        i['Cabin_num1'] = i['Cabin'].apply(lambda x: str(x).split(' ')[-1][1:])
-        i['Cabin_num1'].replace('an', np.NaN, inplace = True)
-        i['Cabin_num1'] = i['Cabin_num1'].apply(lambda x: int(x) if not pd.isnull(x) and x != '' else np.NaN)
-        i['Cabin_num'] = pd.qcut(train['Cabin_num1'],3)
-        #i['Cabin_num'] = i['Cabin_num'].isnull().apply(lambda x: float(x))
-    train = pd.concat((train, pd.get_dummies(train['Cabin_num'], prefix = 'Cabin_num')), axis = 1)
-    test = pd.concat((test, pd.get_dummies(test['Cabin_num'], prefix = 'Cabin_num')), axis = 1)
-    del train['Cabin_num']
-    del test['Cabin_num']
-    del train['Cabin_num1']
-    del test['Cabin_num1']
-    return train, test
-
-
