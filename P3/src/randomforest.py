@@ -62,14 +62,14 @@ rf = RandomForestClassifier(criterion='gini',
                                 oob_score=True,
                                 random_state=1,
                                 n_jobs=-1)
-                            
+
 rf.fit(X_train, y_train.values.ravel())
 print("%.4f" % rf.oob_score_)
 
 # Comprobando importancia de características
 
-pd.concat((pd.DataFrame(X_train.columns, columns = ['variable']), 
-           pd.DataFrame(rf36.feature_importances_, columns = ['importance'])), 
+pd.concat((pd.DataFrame(X_train.columns, columns = ['variable']),
+           pd.DataFrame(rf.feature_importances_, columns = ['importance'])),
           axis = 1).sort_values(by='importance', ascending = False)[:10]
 
 # Submission file
