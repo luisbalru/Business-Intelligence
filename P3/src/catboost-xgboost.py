@@ -457,7 +457,7 @@ xgboostBO = BayesOpt(xgbcv,
                                   })
 
 print ("Start Optimization of Main Model")
-xgboostBO.maximize(init_points=10,n_iter=110, xi=0.0,  acq="poi")
+#xgboostBO.maximize(init_points=10,n_iter=110, xi=0.0,  acq="poi")
 
 #Best parameters from Bayes-opt for accuracy as a metric
 param = {
