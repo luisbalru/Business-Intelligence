@@ -416,7 +416,7 @@ temp.plot()
 temp.plot(kind='barh', x='feature', y='fscore', legend=False, figsize=(6, 10))
 plt.title('XGBoost Feature Importance')
 plt.xlabel('relative importance')
-
+"""
 ## BAYESIAN-OPTIMIZATION FOR hyperparameter
 
 #Defining function for optimizing XGBoost - can also do this for other models like RF
@@ -457,8 +457,8 @@ xgboostBO = BayesOpt(xgbcv,
                                   })
 
 print ("Start Optimization of Main Model")
-xgboostBO.maximize(init_points=10,n_iter=110, xi=0.0,  acq="poi")
-
+#xgboostBO.maximize(init_points=10,n_iter=110, xi=0.0,  acq="poi")
+"""
 #Best parameters from Bayes-opt for accuracy as a metric
 param = {
                   'max_depth' : 19,
@@ -482,7 +482,7 @@ def submit(pred, name='ans_xgb_final'):
     ans_xgb_final.to_csv('submissions/' + name + '.csv', index=False)
 
 submit(clf.predict(test_dmatrix))
-
+"""
 importances = clf_final.get_fscore()
 importances = sorted(importances.items(), key=operator.itemgetter(1))
 
@@ -493,3 +493,4 @@ temp.plot()
 temp.plot(kind='barh', x='feature', y='fscore', legend=False, figsize=(6, 10))
 plt.title('XGBoost Feature Importance')
 plt.xlabel('relative importance')
+"""

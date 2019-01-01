@@ -45,6 +45,13 @@ def removal(X_train, X_test):
         del X_test[i]
     return X_train, X_test
 
+def removal3(X_train,X_test):
+    z = ['wpt_name','num_private','subvillage','region_code','district_code',
+        'lga','ward','recorded_by','scheme_name','scheme_management']
+    for i in z:
+        del X_train[i]
+        del X_test[i]
+    return X_train, X_test
 
 def removal2(X_train, X_test):
     """
@@ -63,8 +70,10 @@ def removal2(X_train, X_test):
           'waterpoint_type_group',
          'extraction_type_group']
     for i in z:
-        del X_train[i]
-        del X_test[i]
+        if i in X_train:
+            del X_train[i]
+        if i in X_test:
+            del X_test[i]
     return X_train, X_test
 
 
@@ -190,8 +199,8 @@ def meaningful(X_train, X_test,y_train):
     X_train2 = pd.concat((X_train.iloc[:, :12], X_train[good_cols]), axis = 1)
     X_test2 = pd.concat((X_test.iloc[:, :12], X_test[good_cols]), axis = 1)
     return X_train2, X_test2
-
-def lda(X_train, X_test, y_train, cols=['population', 'gps_height', 'latitude', 'longitude']):
+## population
+def lda(X_train, X_test, y_train, cols=['population','gps_height', 'latitude', 'longitude']):
     sc = StandardScaler()
     X_train_std = sc.fit_transform(X_train[cols])
     X_test_std = sc.transform(X_test[cols])
@@ -219,14 +228,6 @@ def pca(X_train,X_test,y_train, cols=['population','gps_height','latitude','long
         del X_test[i]
     return X_train, X_test
 
-def gini(p):
-    return 1-(p**2 + (1-p)**2)
-
-def impurity(X_train):
-    imp = {}
-    for i in X_train.columns[17:]:
-        imp[i] = gini(X_train[i].mean())
-    return imp
 
 def small_n(X_train, X_test):
     cols = [i for i in X_train.columns if type(X_train[i].iloc[0]) == str]
