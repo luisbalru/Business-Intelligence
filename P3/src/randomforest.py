@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
-import feature_process_helper
+import preprocesamiento
 from sklearn.externals import joblib
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
@@ -18,21 +18,21 @@ y_train = pd.read_csv('/home/luisbalru/Universidad/Business-Intelligence/P3/data
 del y_train['id']
 
 
-X_train, X_test = feature_process_helper.dates(X_train, X_test)
-X_train, X_test = feature_process_helper.dates2(X_train, X_test)
-X_train, X_test = feature_process_helper.construction(X_train, X_test)
-X_train, X_test = feature_process_helper.bools(X_train, X_test)
-X_train, X_test = feature_process_helper.locs(X_train, X_test)
-X_train, X_test = feature_process_helper.codes(X_train,X_test)
-#X_train, X_test = feature_process_helper.meaningful(X_train,X_test,y_train)
+X_train, X_test = preprocesamiento.dates(X_train, X_test)
+X_train, X_test = preprocesamiento.dates2(X_train, X_test)
+X_train, X_test = preprocesamiento.construction(X_train, X_test)
+X_train, X_test = preprocesamiento.bools(X_train, X_test)
+X_train, X_test = preprocesamiento.locs(X_train, X_test)
+X_train, X_test = preprocesamiento.codes(X_train,X_test)
+#X_train, X_test = preprocesamiento.meaningful(X_train,X_test,y_train)
 X_train['population'] = np.log(X_train['population'])
 X_test['population'] = np.log(X_test['population'])
-X_train, X_test = feature_process_helper.removal2(X_train, X_test)
-X_train, X_test = feature_process_helper.small_n2(X_train, X_test)
+X_train, X_test = preprocesamiento.removal2(X_train, X_test)
+X_train, X_test = preprocesamiento.small_n2(X_train, X_test)
 # cols = ['gps_height', 'latitude', 'longitude']
-#X_train, X_test = feature_process_helper.pca(X_train, X_test, y_train)
-X_train, X_test = feature_process_helper.lda(X_train, X_test, y_train)
-X_train, X_test = feature_process_helper.dummies(X_train, X_test)
+#X_train, X_test = preprocesamiento.pca(X_train, X_test, y_train)
+X_train, X_test = preprocesamiento.lda(X_train, X_test, y_train)
+X_train, X_test = preprocesamiento.dummies(X_train, X_test)
 
 print(len(X_train.columns))
 
