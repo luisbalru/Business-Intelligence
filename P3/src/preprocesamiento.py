@@ -10,18 +10,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.decomposition import PCA
 
-def amount_tsh(X_train, X_test):
-    """
-    convert this item into a categorical variable
-    """
-    X_train['amntsh'], bins = pd.qcut(X_train[X_train['amount_tsh'] != 0]['amount_tsh'], 4, retbins=True)
-    X_test['amntsh'] = pd.cut(X_test['amntsh'], bins=bins, include_lowest=True)
-    i['amntshnull'] = i['amntsh'].isnull().apply(lambda x: float(x))
-    X_train = pd.concat((X_train, pd.get_dummies(X_train['amntsh'], prefix = 'amntsh')), axis = 1)
-    X_test = pd.concat((X_test, pd.get_dummies(X_test['amntsh'], prefix = 'amntsh')), axis = 1)
-    del X_train['amntsh']
-    del X_test['amntsh']
-    return X_train, X_test
 
 def removal(X_train, X_test):
     """
@@ -177,20 +165,6 @@ def dummies(X_train, X_test):
         del X_test[column]
     return X_train, X_test
 
-def meaningful(X_train, X_test,y_train):
-    status = pd.get_dummies(y_train['status_group'])
-    good_cols = []
-    for i in X_train.columns[12:]:
-        if status[X_train[i] == 1]['non functional'].mean() > (status['non functional'].mean() + .0510):
-            good_cols.append(i)
-        elif status[X_train[i] == 1]['functional needs repair'].mean() > (status['functional needs repair'].mean() + .0510):
-            good_cols.append(i)
-        elif status[X_train[i] == 1]['functional'].mean() > (status['functional'].mean() + .0510):
-            good_cols.append(i)
-    X_train2 = pd.concat((X_train.iloc[:, :12], X_train[good_cols]), axis = 1)
-    X_test2 = pd.concat((X_test.iloc[:, :12], X_test[good_cols]), axis = 1)
-    return X_train2, X_test2
-
 def lda(X_train, X_test, y_train, cols=['population', 'gps_height', 'latitude', 'longitude']):
     sc = StandardScaler()
     X_train_std = sc.fit_transform(X_train[cols])
@@ -219,30 +193,6 @@ def pca(X_train,X_test,y_train, cols=['population','gps_height','latitude','long
         del X_test[i]
     return X_train, X_test
 
-def gini(p):
-    return 1-(p**2 + (1-p)**2)
-
-def impurity(X_train):
-    imp = {}
-    for i in X_train.columns[17:]:
-        imp[i] = gini(X_train[i].mean())
-    return imp
-
-def small_n(X_train, X_test):
-    cols = [i for i in X_train.columns if type(X_train[i].iloc[0]) == str]
-    X_train[cols] = X_train[cols].where(X_train[cols].apply(lambda x: x.map(x.value_counts())) > 20, "other")
-    for column in cols:
-        for i in X_test[column].unique():
-            if i not in X_train[column].unique():
-                X_test[column].replace(i, 'other', inplace=True)
-    return X_train, X_test
-
-def op_time(X_train, X_test):
-    for i in [X_train, X_test]:
-        i['operation_time']=i.date_recorded.apply(lambda x: pd.to_datetime(x))-i.construction_year.apply(lambda x: pd.to_datetime(x))
-        i['operation_time']=i.operation_time.apply(lambda x: float(x.days)/365)
-        i.loc[i['operation_time'] < 0,i.columns=='operation_time'] = 63.92060232717317
-    return X_train, X_test
 
 def small_n2(X_train, X_test):
     cols = [i for i in X_train.columns if type(X_train[i].iloc[0]) == str]
