@@ -1,6 +1,6 @@
 \input{preambuloSimple.tex}
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./imgs/} }
 
 %----------------------------------------------------------------------------------------
 %	TÍTULO Y DATOS DEL ALUMNO
@@ -10,7 +10,7 @@
 	\normalfont \normalsize 
 	\textsc{\textbf{Inteligencia de Negocio (2018-2019)} \\ Doble Grado en Ingeniería Informática y Matemáticas \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
 	\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-	\huge Memoria Práctica 2: \\ Segmentación para Análisis Empresarial. Grupo de Prácticas 1 \\ % The assignment title
+	\huge Memoria Práctica 3: \\ Segmentación para Análisis Empresarial. Grupo de Prácticas 1 \\ % The assignment title
 	\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
@@ -28,6 +28,33 @@
 \maketitle % Muestra el Título
 	
 \newpage %inserta un salto de página
+
+\section{Posición en la competición y entregas}	
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{rank.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Posición final el día 6 de enero a las 00:00} 
+	\label{fig:rank}
+\end{figure}
+	
+	
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{sub1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Entregas (1)} 
+	\label{fig:sub1}
+\end{figure}
+	
+	
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{sub2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Entregas (2)} 
+	\label{fig:sub2}
+\end{figure}
+
+\newpage
 	
 \tableofcontents % para generar el índice de contenidos
 	
@@ -44,835 +71,162 @@
 
 \section{Introducción}
 
-La Estadística tiene cada vez más influencia en la sociedad. En los periódicos aparecen diariamente resultados estadísticos sobre economía, salud, opinión o política. ¿Qué hay de cierto en la estadística? Podemos desvirtuar la verdad con estadísticas, pero podemos especular más sin ellas. La Estadística es necesaria cuando los fenómenos objeto de estudio no se pueden predecir con exactitud, por tener una componente de azar, de incertidumbre. Dicho azar ya no es el producto de nuestro ignorancia, sino una expresión de nuestro conocimiento. La incertidumbre se puede controlar y cuantificar gracias a la estadística.
+En la presente práctica nos hemos enfrentado a la competición de Driven Data \textit{Pump it Up: Data Mining the Water Table} basada en predecir qué bombas de extracción de aguas funcionan, cuáles necesitan algunas reparaciones y cuáles no funcionan. Para predecir una de estas tres clases se dispone de 39 variables sobre qué tipo de bomba se está usando, cuándo se instaló, cómo se administra, su ubicación, datos sobre la cuenca geográfica, tipo de extracción, coste del agua,etcc. Una comprensión inteligente de qué puntos de agua fallarán puede mejorar las operaciones de mantenimiento y garantizar que el agua potable y limpia esté disponible para las comunidades de Tanzania. El conjunto de entrenamiento consta de 59.400 instancias. \\
 
-Cuando las estadísticas están basadas en datos ciertos podemos proporcionar una información muy valiosa a la sociedad. En ese sentido, el Instituto Nacional de Estadística (INE) es el ente público dedicado a la elaboración de recoger datos de la población para así plasmar numéricamente la realidad que vivimos. Concretamente, en 2011 se publicó el censo de población (\cite{censo}), que será nuestro objetivo de estudio. El conjunto de datos se compone de 142 variables sobre sexo, edad, nacionalidad, estudios... Nos centraremos en los datos relativos a la provincia de Granada, lo que se reduce a 83499 casos. 
+En mi caso, para cumplir las restricciones impuestas en el guión, incluyo en la documentación cuatro directorios que las soluciones que he desarrollado. El primero, llamado \textit{Pruebas}, contiene dos ficheros en los que, utilizando el código de ejemplo del profesor D. Jorge Casillas, pongo en práctica otros algoritmos como son Random Forest y XGB. Tras familiarizarme con el problema, pasé a desarrollar una de mis soluciones. Dicha solución se encuentra en \textit{Solucion 1} y hago un preprocesamiento máx exhaustivo para finalmente utilizar Random Forest. Sobre esta hago ciertas modificaciones en parámetros y preprocesamiento (introduzco PCA, elimino unas variables a veces y otras no) para ver cómo se comporta el score. Para esta solución, mi score más alto es 0.8181 (puesto 476). \\
 
-El presente estudio estadístico se centra en cuatro casos:
-\begin{itemize}
-	\item Caso 1: Personas que viven con sus padres. 
-	\item Caso 2: Mujeres científicas.
-	\item Caso 3: Hogares biparentales con hijos menores de 25 años.
-	\item Caso 4: Mujeres y hogar.
-\end{itemize}
+Sin embargo, al tratarse de un problema multiclase, sospecho que Random Forest puede flojear, así que intento acercarme a algoritmos de boosting tipo XGB o uno nuevo que descubro en la literatura llamado CatBoost. El intento fue fallido (\textit{Solución 2}). Por tanto, vuelvo a mi anterior RF para intentar mejorar la puntuación cambiando de nuevo parámetros e intentando nuevos preprocesamientos. \\
 
-Dichos casos se enfrentarán mediante técnicas de clustering (\cite{jain1988algorithms}). Más concretamente, a través de 4 algoritmos basados en particionamiento, como son kMeans (\cite{kmeans}), MeanShift (\cite{ms}), BIRCH (\cite{birch}, \cite{zhang1996birch}) y DBSCAN (\cite{dbscan}); y uno jerárquico aglomerativo tipo Ward (\cite{ward}) (las comparaciones en \cite{steinbach2000comparison}). Su análisis se apoya en datos de rendimiento como gráficos tipo \textit{scatter matrix, heatmap o dendograma}, según el algoritmo. Además, los algoritmos basados en particionamiento se evaluarán a través de las métricas \textit{Silhouette} y \textit{Calinski-Harabaz}. A parte de los citados artículos, me baso en el material de teoría de la asignatura y en los libros \cite{data_mining_book} y \cite{fb_book}. \\
-
-Por último, es necesario reseñar que por propia definición, algunos algoritmos requieren la especificación del número de clusters a formar, mientras que otros, dados ciertos parámetros, muestran el número de cluster óptimo asociado a dicha configuración. He probado distintas configuraciones de cada algoritmo (se especificarán en cada apartado), pero en el caso de kMeans utilizo el llamado \textit{Elbow Method} para elegir el número óptimo de clusters (\cite{elbow-method}, \cite{elbow-method1}).
-
-\newpage
-%----------------------------------------------------------------------------------------
-%	Caso de estudio X 
-%----------------------------------------------------------------------------------------
+Ante la falta de mejora, comienzo totalmente de nuevo el problema (Solución 3). Cambio de Python a R ya que echaba en falta la facilidad que da R para visualizar tablas y conjuntos de datos además de la inmediatez de la selección de características. Tras un preprocesamiento basado en eliminar aquellas columnas que parecen no mejorar la clasificación, tratamiento de valores perdidos de algunas variables y modificación del formato de otras. Una vez procesados, utilizo un XGB con validación cruzada para determinar cuántas veces ejecuto el modelo. Tras varios ajustes sobre el algoritmo consigo mi mayor puntuación (0.8242, puesto 114).
 
 
-\section{Caso de estudio 1: Personas que viven con sus padres}
+\section{Tabla resumen}
 
-El presente caso de estudio se basa en la búsqueda de patrones entorno a personas que viven con sus padres. Para extraer dicho subconjunto de instancias, se filtra por \textit{EDADMAD>0} y \textit{EDADPAD>0}. Además, he elegido las siguientes características:
-\begin{itemize}
-	\item EDAD
-	\item ESREAL
-	\item CMUNN
-	\item ESTUMAD
-	\item ESTUPAD
-\end{itemize}
+Presento la tabla resumen de todas las subidas. Muchas de ellas parten de un preprocesamiento general para luego ir haciendo pequeñas modificaciones en parámetros. Por tanto, no repetiré la descripción en cada entrada, sino cuando sea realmente novedoso para así facilitar la escritura e interpretación de la tabla. 
 
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{c1-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Configuración del caso 1} 
-	\label{fig:configuración-caso1}
-\end{figure}
-
-con la pretensión de encontrar relaciones entre la edad, los estudios del sujeto, el lugar donde vive y la formación de sus progenitores. Los resultados son los siguientes:
-
-\subsection{kMeans}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.6]{em1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Salida de Elbow Methow} 
-	\label{fig:em-caso1}
-\end{figure}
-
-Elbow Method nos indica que el número óptimo de clusters es 2. En efecto, así es tras varias configuraciones distintas:
 
 \begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
+	\resizebox{16cm}{13cm}{
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 		\hline
-		Nº Clusters & Tiempo(s) & Silhoutte & Calinski-Harabaz & Tamaño de cada cluster                                                                                                    \\ \hline
-		2           & 0.08      & 0.51388   & 24903.026        & \begin{tabular}[c]{@{}c@{}}1: 11690 (54.34\%)\\ 0: 9824 (45.66\%)\end{tabular}                                            \\ \hline
-		3           & 0.15      & 0.44672   & 19309.672        & \begin{tabular}[c]{@{}c@{}}1:  9824 (45.66\%)\\ 2:  5988 (27.83\%)\\ 0:  5702 (26.50\%)\end{tabular}                      \\ \hline
-		4           & 0.29      & 0.40962   & 19109.260        & \begin{tabular}[c]{@{}c@{}}2:  5988 (27.83\%)\\ 1:  5702 (26.50\%)\\ 3:  5180 (24.08\%)\\ 0:  4644 (21.59\%)\end{tabular} \\ \hline
-	\end{tabular}
+		\textbf{Solución} & \textbf{Fecha y Hora} & \textbf{Posición} & \textbf{Score Training} & \textbf{Score Driven Data} & \textbf{Descripción Preprocesado}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       & \textbf{Descripción Clasificador}                       & \textbf{\begin{tabular}[c]{@{}c@{}}Configuración\\ Parámetros\end{tabular}}                                                                                                                                                                                                         & \textbf{Título}                                                                                                    \\ \hline
+		Pruebas           & 2018-12-10 10:07:56   & 1377              & 0.825                   & 0.7585                     & Ninguno                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 & LightGBM                                                & \begin{tabular}[c]{@{}c@{}}200 estimadores\\ 2 hebras\end{tabular}                                                                                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Código de prueba\\ de Jorge Casillas\end{tabular}                                       \\ \hline
+		Pruebas           & 23/12/2018 – 18:55    & 1397              & 0.6932                  & 0.6938                     & Ninguno                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 & Random Forest                                           & \begin{tabular}[c]{@{}c@{}}200 estimadores\\ max\_depth=5\end{tabular}                                                                                                                                                                                                              & \begin{tabular}[c]{@{}c@{}}Probando con\\ Random Forest\end{tabular}                                               \\ \hline
+		Pruebas           & 23/12/2018-18:59      & 1397              & 0.7131                  & 0.7118                     & \begin{tabular}[c]{@{}c@{}}Imputación de valores\\ perdidos a través del más\\ frecuente\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   & Random Forest                                           & \begin{tabular}[c]{@{}c@{}}200 estimadores\\ max\_depth=5\end{tabular}                                                                                                                                                                                                              & \begin{tabular}[c]{@{}c@{}}Imputando valores\\ perdidos en RF\end{tabular}                                         \\ \hline
+		Pruebas           & 23/12/2018 – 19:11    & 1397              & 0.7647                  & 0.743                      & Ninguno                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 & XGBoost sin CV                                          & 200 estimadores                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Probando el código\\ comentado del \\ \\ ejemplo\end{tabular}                           \\ \hline
+		Solución 1        & 2018-12-28 11:25:52   & 476               & 0.82                    & 0.8181                     & \begin{tabular}[c]{@{}c@{}}- Modificación del formato date\\ - Tratamiento de valores perdidos en \\ \\ 'construction\_year' (35\% son v.p. -\textgreater imputo\\ la media)\\ - Cambio Null por False en 'public\_meeting' y\\ 'permit'\\ - Null de 'longitude', 'latitude', 'gps\_height',\\ 'population' se cambian por las medias.\\ - 'region\_code', 'district\_code' a string\\ - Eliminación de 'id','amount\_tsh',  'num\_private', 'region',\\ 'quantity', 'quality\_group', 'source\_type', 'payment',\\ 'waterpoint\_type\_group', 'extraction\_type\_group'\\ - LDA sobre 'population', 'gps\_height', 'latitude', 'longitude'\\ \\ - Dummies\end{tabular} & Random Forest                                           & \begin{tabular}[c]{@{}c@{}}Estimación de \\ \\ hiperparámetros\\ con GridSearch. \\ \\ Mejores resultados:\\ 1000 estimadores.\\ \\ \\ Criterio:gini\\ min\_samples\_split=6\\ max\_features='auto',\\ oob\_score=True,\\ n\_jobs=-1\end{tabular}                                   & \begin{tabular}[c]{@{}c@{}}Preprocesamiento\\ profundo con RF\\ y ajuste de hiperparámetros\end{tabular}           \\ \hline
+		Solución 1        & 2018-12-28 12:18:24   & 476               & 0.81                    & 0.8078                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & LightGBM                                                & \begin{tabular}[c]{@{}c@{}}Objetive:binary\\ num\_estimadores=1000\end{tabular}                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Cambiando a un nuevo\\ algoritmo para ver mejoría\end{tabular}                          \\ \hline
+		Solución 1        & 2018-12-29 02:09:38   & 476               & 0.8129                  & 0.8179                     & Idem añadiendo codes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & Random Forest                                           & 500 estimadores                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Sobre RF, agregar\\ pequeñas modificaciones\\ en preprocesamiento\end{tabular}          \\ \hline
+		Solución 1        & 2018-12-29 02:33:22   & 476               & 0.8136                  & 0.8181                     & \begin{tabular}[c]{@{}c@{}}Idem cambiando LDA por\\ PCA\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & \begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & 500 estimadores                                                                                                                                                                                                                                                                     & Probando con PCA                                                                                                   \\ \hline
+		Solución 2        & 2018-12-30 23:34:28   & 476               & 0.82                    & 0.8026                     & \begin{tabular}[c]{@{}c@{}}-Eliminar características con\\ muy pocos o muchos valores distintos\\ -Reemplazamiento de NaN\\ - Reemplazamiento de 0\\ - Imputación de MV\\ - Cambiar coordenadas terrestres\\ - Codificación de variables categóricas\\ - Escalar características\end{tabular}                                                                                                                                                                                                                                                                                                                                                                           & CatBoost                                                & \begin{tabular}[c]{@{}c@{}}Learning\_rate=0.1\\ loss\_function = MultiClass\\ eval\_metric = Accuracy\\ od\_pval=0.01\end{tabular}                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Investigando con \\ \\ CatBoost\end{tabular}                                            \\ \hline
+		Solución 2        & 2018-12-30 23:34:46   & 476               & 0.6                     & 0.5461                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}'booster': 'gbtree',\\         'objective': 'multi:softmax',\\         'eta': 0.025,\\         'max\_depth': 23,\\         'colsample\_bytree': 0.4,\\         'silent': 1,\\         'eval\_metric': 'mlogloss',\\         'num\_class': 3\end{tabular} & \begin{tabular}[c]{@{}c@{}}Intento muy fallido\\ con XGBoost.\\ Probables errores\\ no encontrados\end{tabular}    \\ \hline
+		Solución 2        & 2018-12-30 23:55:16   & 476               & 0.65                    & 0.5461                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & Idem. 'eta':0.1                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Intentando mejorar\\ resultados sin éxito\end{tabular}                                  \\ \hline
+		Solución 2        & 2018-12-31 01:01:45   & 476               & 0.79                    & 0.7273                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & Idem                                                                                                                                                                                                                                                                                & \begin{tabular}[c]{@{}c@{}}Corrigiendo errata\\ que hace mejorar \\ \\ pero no suficiente\end{tabular}             \\ \hline
+		Solución 1        & 01/01/2019 21:07:00   & 476               & 0.8083                  & 0.8129                     & \begin{tabular}[c]{@{}c@{}}Mismo preprocesamiento\\ que en 8 pero sin eliminar\\ 'population' ni 'installer'\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               & \begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & 1000 estimadores                                                                                                                                                                                                                                                                    & \begin{tabular}[c]{@{}c@{}}Volviendo a mi\\ mejor solución buscando\\ progresar\end{tabular}                       \\ \hline
+		Solución 1        & 01/01/2019 21:16:00   & 476               & 0.8086                  & 0.8134                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & \begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & 500 estimadores                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Disminuyendo\\ el número de\\  estimadores\end{tabular}                                 \\ \hline
+		Solución 3        & 2019-01-02 00:44:05   & 146               & 0.83                    & 0.8236                     & \begin{tabular}[c]{@{}c@{}}- Reducción de 40 a 26 \\ \\ variables por similitud.\\ - Imputación de MV y 0 \\ \\ en 'construction\_year' y \\ \\ 'gps\_height'.\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}objective = "multi:softmax", \\ \\ booster = "gboost"\\ eval\_metric = "merror", \\ nrounds = min.error.idx, \\ \\  num\_class = 4,\\ eta = .2, \\ \\ max\_depth = 12, \\ \\ colsample\_bytree = .4\end{tabular}                                         & \begin{tabular}[c]{@{}c@{}}Nueva solución con\\ XGBoost ahora sí\\ efectiva\end{tabular}                           \\ \hline
+		Solución 3        & 2019-01-02 10:09:42   & 146               & 0.825                   & 0.8234                     & Idem sin eliminar 'installer'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           & XGBoost                                                 & Idem                                                                                                                                                                                                                                                                                & Nuevo descenso                                                                                                     \\ \hline
+		Solución 3        & 2019-01-02 10:22:10   & 146               & 0.82                    & 0.8232                     & \begin{tabular}[c]{@{}c@{}}Vuelta al preprocesado\\ anterior\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               & XGBoost                                                 & Número de iteraciones a 10                                                                                                                                                                                                                                                          & \begin{tabular}[c]{@{}c@{}}Cambiando el número \\ \\ de iteraciones que \\ \\ se ejecuta el algoritmo\end{tabular} \\ \hline
+		Solución 3        & 2019-01-04 10:06:16   & 147               & 0.825                   & 0.8236                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}12 iteraciones\\ 'eta':0.2\end{tabular}                                                                                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Probando distintas \\ \\ configuraciones\end{tabular}                                   \\ \hline
+		Solución 3        & 2019-01-04 10:33:23   & 114               & 0.827                   & 0.8242                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}20 iteraciones\\ 'eta':0.3\end{tabular}                                                                                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Mejor resultado\\ de mi competición\end{tabular}                                        \\ \hline
+		Solución 3        & 2019-01-04 10:48:41   & 114               & 0.835                   & 0.8242                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}25 iteraciones\\ 'eta':0.35\\ max\_depth=14\end{tabular}                                                                                                                                                                                                 & \begin{tabular}[c]{@{}c@{}}Intentado\\ subir al top 100\end{tabular}                                               \\ \hline
+		Solución 3        & 2019-01-05 10:22:41   & 116               & 0.835                   & 0.8207                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}20 iteraciones\\ 'maximize':true\\ 'eta':0.35\\ max\_depth=14\end{tabular}                                                                                                                                                                               & \begin{tabular}[c]{@{}c@{}}Intentado subir\\ al top 100\end{tabular}                                               \\ \hline
+		Solución 3        & 2019-01-05 10:34:23   & 116               & 0.83                    & 0.8242                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}25 iteraciones\\ 'eta':0.35\\ max\_depth=14\end{tabular}                                                                                                                                                                                                 & Vuelta al anterior                                                                                                 \\ \hline
+		Solución 3        & 2019-01-05 10:49:02   & 116               & 0.84                    & 0.8233                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}25 iteraciones \\ \\ maximaze=TRUE \\ \\ eta=0,7 \\ \\ max\_depth=14\end{tabular}                                                                                                                                                                        & \begin{tabular}[c]{@{}c@{}}Último envío\\ de mi competición\end{tabular}                                           \\ \hline
+\end{tabular}
+}
 \end{table}
+\section{Pruebas}
 
-A la luz de Silhoutte y Calinski-Harabaz, la configuración con dos clusters es la más conveniente. A continuación muestro las representaciones gráficas:
+Tras la primera subida con el código del ejemplo, mi objetivo fue familiarizarme con el problema y probar distintos algoritmos 'grosso modo'. Para ello, pasé por Random Forest y XGB. Más tarde, imputé valores perdidos a través de los más frecuentes en RF.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.8]{heatmap-km-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap kMeans Caso 1} 
-	\label{fig:hm-km-caso1}
+	\includegraphics[scale=0.5]{rfimp.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Prueba con RF imputando MV} 
+	\label{fig:RF1}
 \end{figure}
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.4]{kmeans-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter kMeans Caso 1} 
-	\label{fig:sc-km-caso1}
+	\includegraphics[scale=0.6]{xgb1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Prueba con XGB} 
+	\label{fig:xgb1}
 \end{figure}
 
-Como se puede comprobar tanto en el heatmap como con el scatter matrix (con mayor profundidad), cuatro de las cinco características elegidas (edad,estudios y formación de los padres) son bastante parecidas. Lo que hace diferenciar claramente a los dos grupos de individuos es el código o tamaño del municipio donde residen, encontrándose un grupo de individuos que nacieron en un municipio de entre 2000 y 5000 habitantes, mientras que el otro grupo tiene una población de más de 20000 habitantes. Por lo general, los sujetos suelen tener 16 años, con un nivel de estudios bajo (aunque el resultado es algo inverosímil dada la legislación de educación actual) con padres en posesión del título de bachillerato.
+Los algoritmos generaban resultados pobres fruto del nulo preprocesamiento de datos. 
 
-\newpage
+\section{Solución 1}
 
-\subsection{MeanShift}
-
-Meanshift muestra los siguientes resultados:
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & Tiempo(s) & Silhoutte & Calinski-Harabaz & Tamaño de cada cluster                                                         \\ \hline
-		2           & 1.18      & 0.51388   & 24903.026        & \begin{tabular}[c]{@{}c@{}}1: 11690 (54.34\%)\\ 0: 9824 (45.66\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-lo que rubrica el resultado óptimo de kMeans anterior.
+Lo primero que hice, ya de forma más seria, fue un análisis exploratorio de los datos. También dibujé la distribución de las tres clases:
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.8]{heatmap-ms-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap MeanShift Caso 1} 
-	\label{fig:hm-ms-caso1}
+	\includegraphics[scale=0.5]{clases.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Distribución de las clases} 
+	\label{fig:CLASES}
 \end{figure}
+
+Tras el análisis exploratorio, extraje las siguientes conclusiones:
+
+\begin{enumerate}
+	\item La mayoría de las variables son categóricas
+	\item Ciertas variables poseen un porcentaje elevado de 'null', lo que va a requerir de una imputación.
+	\item La mayoría de las variables categóricas tienen grandes cantidades de valores únicos.
+	\item Existe redundancia entre las variables
+\end{enumerate}
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.4]{meanshift-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter MeanShift Caso 1} 
-	\label{fig:sc-ms-caso1}
+	\includegraphics[scale=0.5]{categoricas.jpg}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Características y porcentaje de MV} 
+	\label{fig:cat}
 \end{figure}
 
-Los resultados de MeanShift expresan de nuevo la diferencia entre los lugares donde viven los sujetos. En este caso, los centros de los clusters con respecto a la edad se reducen hasta los 12 años de media y los estudios de los padres en los sujetos con municipio de mayor población tienden a ser mayor. 
+Por tanto, a pesar de que las clases están desbalanceadas, la mayoría de mi preprocesamiento se basará en seleccionar y modificar características.
 
-\subsection{BIRCH}
+\subsection{Tratamiento de características}
 
-BIRCH requiere un número explícito de clusters. A la luz de los algoritmos anteriores, he probado tres configuraciones. Son las siguientes:
+De entre las pocas variables numéricas que tenemos, se observa que muchas de ellas presentan valores perdidos. En concreto, para \textit{longitude}, \textit{latitude}, \textit{gps\_height} y \textit{population}, los valores nulos y ceros son estimados a través de la media para \textit{district\_code}, \textit{basin} y \textit{subvillage}:
 
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & Tiempo(s) & Silhoutte & Calinski-Harabaz & Tamaño de cada cluster                                                                                                    \\ \hline
-		2           & 0.68      & 0.51388   & 24903.026        & \begin{tabular}[c]{@{}c@{}}1: 11690 (54.34\%)\\ 0: 9824 (45.66\%)\end{tabular}                                            \\ \hline
-		3           & 0.64      & 0.44622   & 17060.595        & \begin{tabular}[c]{@{}c@{}}0: 11690 (54.34\%)\\ 1:  7386 (34.33\%)\\ 2:  2438 (11.33\%)\end{tabular}                      \\ \hline
-		4           & 0.72      & 0.39607   & 17832.861        & \begin{tabular}[c]{@{}c@{}}3:  7386 (34.33\%)\\ 0:  5974 (27.77\%)\\ 1:  5716 (26.57\%)\\ 2:  2438 (11.33\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
+ \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+ 	\centering
+ 	\includegraphics[scale=0.42]{locs1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+ 	\caption{Tratamiento de null y 0} 
+ 	\label{fig:locs1}
+ \end{figure}
 
-Vemos de nuevo que el número óptimo de clusters es 2 y que, a medida que crece el número de clusters, las métricas empeoran.
+Por otra parte, reduzco la dimensionalidad utilizando PCA sobre las variables continuas \textit{longitude}, \textit{latitude} y \textit{gps\_height}
 
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+ \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.8]{heatmap-br-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap BIRCH Caso 1} 
-	\label{fig:hm-br-caso1}
+	\includegraphics[scale=0.45]{pca1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{PCA sobre variables continuas} 
+	\label{fig:pca1}
 \end{figure}
 
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+Por otra parte, elimino un gran número de columnas por la redundacia encontrada:
+
+ \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.4]{birch-1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter BIRCH Caso 1} 
-	\label{fig:sc-br-caso1}
+	\includegraphics[scale=0.4]{correlaciones.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Correlación entre variables numéricas} 
+	\label{fig:correlaciones}
 \end{figure}
 
-Esta ejecución prácticamente calca los resultados de kMeans para 2 clusters, señalando nuevamente la diferencia principal entre el municipio donde habitan los sujetos. Se recupera la edad de 16 años y se iguala de nuevo la formación de los padres.
+Por tanto, elimino las variables \textit{id}, \textit{amount-sh}, \textit{num-private}, \textit{region}, \textit{quantity}, \textit{quality-group}, \textit{source-type}, \textit{payment}, \textit{waterpoint-type-group}, \textit{extraction-type-group} y \textit{scheme-name}.
 
-\subsection{DBSCAN}
+Por último, convierto el resto de variables categóricas en dummies para poder operar con ellas.
 
-DBSCAN necesita dos parámetros, \textit{min\_sampes} (tamaño mínimo) y \textit{eps} (radio). He probado tres configuraciones distintas, teniendo en cuenta que cuanto mayor es el tamaño mínimo o menor el radio la densidad de puntos necesaria para crear un cluster aumenta.
+\subsection{Ajuste de hiperparámetros}
 
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  \\ \hline
-		2           & 2.67  & 0.3     & 10           & 0.51388   & 12460.563        & \begin{tabular}[c]{@{}c@{}}1: 11689 (54.33\%)\\ 0:  9821 (45.65\%)\\ -1:     4 ( 0.02\%)\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 \\ \hline
-		3           & 1.95  & 0.25    & 10           & 0.41986   & 8357.047         & \begin{tabular}[c]{@{}c@{}}1: 11631 (54.06\%)\\ 0:  9791 (45.51\%)\\ -1:    78 ( 0.36\%)\\ 2:    14 ( 0.07\%)\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              \\ \hline
-		25          & 1.95  & 0.2     & 50           & 0.13990   & 2298.908         & \begin{tabular}[c]{@{}c@{}}4:  4681 (21.76\%)\\ 3:  4401 (20.46\%)\\ 7:  1948 ( 9.05\%)\\ -1:  1110 ( 5.16\%)\\ 10:  1071 ( 4.98\%)\\ 16:  1031 ( 4.79\%)\\ 8:   920 ( 4.28\%)\\ 13:   817 ( 3.80\%)\\ 12:   771 ( 3.58\%)\\ 1:   688 ( 3.20\%)\\ 2:   603 ( 2.80\%)\\ 14:   589 ( 2.74\%)\\ 5:   586 ( 2.72\%)\\ 21:   519 ( 2.41\%)\\ 9:   280 ( 1.30\%)\\ 19:   277 ( 1.29\%)\\ 23:   255 ( 1.19\%)\\ 0:   175 ( 0.81\%)\\ 18:   154 ( 0.72\%)\\ 15:   115 ( 0.53\%)\\ 6:   105 ( 0.49\%)\\ 22:   104 ( 0.48\%)\\ 11:    97 ( 0.45\%)\\ 17:    96 ( 0.45\%)\\ 24:    63 ( 0.29\%)\\ 20:    58 ( 0.27\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
+Ajusto el número de estimadores (500,750 o 1000) para mi modelo. He probado distintas configuraciones (explícitas en la tabla superior) en función de también ligeras modificaciones en el preprocesamiento. De las 25 entregas, muchas de ellas han sido cambiando parámetros, por lo que no subo una copia del código por cada modificación.
 
-Sus representaciones gráficas, en el caso de 2 clusters, son:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+ \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.5]{heatmap-dbscan1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap DBSCAN Caso 1} 
-	\label{fig:hm-db-caso1}
+	\includegraphics[scale=0.4]{grid.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Ajuste de hiperparámetros con GridSearch} 
+	\label{fig:grid}
 \end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.37]{dbscan1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter DBSCAN Caso 1} 
-	\label{fig:sc-db-caso1}
-\end{figure}
-
-Como se aprecia, los resultados son totalmente análogos a los comentados anteriormente.
-
-\subsection{Aglomerativo}
-
-Para enfrentarme al algoritmo de cluster jerárquico aglomerativo con estrategia Ward (de la misma forma en todos los casos), evalúo el algoritmo en 100 clusters para eliminar outliers. A continuación, obviando la columna de cluster pronosticada, dibujo el dendograma.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{capt2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\label{fig:conf2}
-\end{figure}
-
-
- En función del dendograma elijo el número real de clusters. Aunque es algo difusa, la idea es general: minimizar la distancia intracluster y maximizar la distancia intercluster. Además, hay que tener en cuenta que si el número de instancias es mayor que 1000, cojo una muestra de 1000 para garantizar que el algoritmo sea eficiente y acabe. Este es el resultado:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{dendograma1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Dendograma cluster jerárquico Caso 1} 
-	\label{fig:dendogram-caso1}
-\end{figure}
-
-A raíz de esa imagen, elijo 5 clusters.
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Nº Clusters & Tiempo(s) & Tamaño de los clusters                                                                                                                         \\ \hline
-		5           & 0.03      & \begin{tabular}[c]{@{}c@{}}0:   274 (27.40\%)\\ 3:   250 (25.00\%)\\ 1:   215 (21.50\%)\\ 2:   158 (15.80\%)\\ 4:   103 (10.30\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-
-A partir de aquí se genera el heatmap:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{clustermap1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Clustermap cluster jerárquico Caso 1} 
-	\label{fig:clustermap-caso1}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.7]{heatmap-jerarquico1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap cluster jerárquico Caso 1} 
-	\label{fig:heatmapj-caso1}
-\end{figure}
-
-Como consecuencia de la creación de 5 clusters, se pueden observar subgrupos dentro los que ya conocíamos. Por ejemplo, encontramos individuos de 24 años con bachillerato que viven aún con sus padres en zonas con pocos habitantes. Obviamente los niños de 8 años también lo hacen. Por otra parte, en zonas con muchos habitantes encontramos individuos con 22 años con una formación más alta (formación profesional media) y otros que aún con 27 siguen cohabitando con sus progenitores. En todos los casos los padres tienen una formación parecida (entorno al bachillerato). Este tipo de estudios da pie a investigar otros factores, por ejemplo, el acuciante precio del alquiler en las ciudades, que impide a los jóvenes con pocos recursos independizarse.
-
-\subsection{Interpretación de la segmentación}
-
-A la luz de los resultados de los distintos algoritmos, podemos concluir que los individuos que aún viven con sus padres en la provincia de Granada son, por lo general, menores de 25 años (con ciertas excepciones captadas en el clustering jerárquico) y se suelen dividir en dos grandes grupos: sujetos que habitan en un municipio de entre 2000 y 5000 habitantes o en un municipio bastante más poblado del cual sólo conocemos su código (alrededor de 90). La formación del sujeto suele ser media-baja, nunca llegando a la universitaria, al igual que la de sus padres. Un estudio más profundo del municipio en cuestión nos aclararía exacta hay en esos lugares. En cuanto a un análisis más técnico, los mejores valores de métricas se dan para dos clusters llegando a Silhouette del 0.51388 y Calinski-Harabaz de hasta 25000.
-
-\section{Caso de estudio 2: Mujeres ingenieras}
-
-Me dispongo ahora a analizar la situación de las mujeres científicas en la provincia de Granada. Para ello, impongo que \textit{SEXO == 6} y \textit{TESTUD==5}. Además, utilizo las características siguientes:
-\begin{itemize}
-	\item EDAD
-	\item CMUNN
-	\item CODTRABA
-	\item TDESP
-	\item ESTUCON
-\end{itemize}
-
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.7]{capt3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Configuración caso 2} 
-	\label{fig:conf-caso2}
-\end{figure}
-
-He de señalar que este caso tiene un tamaño muy reducido (430 instancias), lo que indica la situación de la ingeniería/arquitectura en 2011 con respecto a la mujer en Granada.
-
-\subsection{kMeans}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{em-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Elbow Method caso 2} 
-	\label{fig:em-caso2}
-\end{figure}
-
-Elbow Method nos indica que el mejor valor de k es 8. No obstante, pruebo 3 configuraciones distintas, correspondientes a los tres picos que se ven en la gráfica (k=2, k=6 y k=8).
-
-\begin{table}[]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & Tiempo(s) & Tamaño de los clusters                                                                                                                                                                                        & Silhouette & Calinski-Harabaz \\ \hline
-		2           & 0.02      & \begin{tabular}[c]{@{}c@{}}1:   219 (50.93\%)\\ 0:   211 (49.07\%)\end{tabular}                                                                                                                               & 0.36921    & 237.128          \\ \hline
-		6           & 0.04      & \begin{tabular}[c]{@{}c@{}}4:    92 (21.40\%)\\ 0:    75 (17.44\%)\\ 5:    73 (16.98\%)\\ 1:    72 (16.74\%)\\ 3:    63 (14.65\%)\\ 2:    55 (12.79\%)\end{tabular}                                           & 0.58784    & 377.099          \\ \hline
-		8           & 0.04      & \begin{tabular}[c]{@{}c@{}}0:    92 (21.40\%)\\ 6:    75 (17.44\%)\\ 1:    63 (14.65\%)\\ 3:    55 (12.79\%)\\ 5:    38 ( 8.84\%)\\ 4:    36 ( 8.37\%)\\ 2:    36 ( 8.37\%)\\ 7:    35 ( 8.14\%)\end{tabular} & 0.68604    & 590.209          \\ \hline
-	\end{tabular}
-\end{table}
-
-Se hace por tanto evidente la conveniencia de elegir 8 clusters.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.65]{heatmap-km-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap kMeans Caso 2} 
-	\label{fig:hm-km-caso2}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{kmeans-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter kMeans Caso 2} 
-	\label{fig:sc-km-caso2}
-\end{figure}
-
-Vemos que hay grandes diferencias en el código postal del lugar de trabajo, cosa que afecta al tiempo de desplazamiento y relacionada con el código del municipio donde viven. También vemos que hay 4 clusters de mujeres que conviven con sus cónyuges y otras 4 que no conviven o están solteras/divorciadas/separadas. La horquilla de edad va de 30 a 43 años. Como se puede ver en el scatter matrix, el tiempo de desplazamiento está prácticamente idénticamente distribuido por edades y que las mujeres que no viven con sus cónyuges están claramente definidas por la edad, siendo personas entre 30 y 35 años. Al parecer, en Granada de las mujeres ingenieras es que formalizan una vida en común con otra persona a partir de los 35 años (quizá por la dilación en los estudios o la precariedad laboral asociada a la ciencia en Granada). Además, vemos una gran brecha entre mujeres que viven en localidades poco habitadas (entre 2000 y 5000 personas) y mujeres que viven en localidades muy pobladas. Sin embargo, no presenta correlación con la edad de las susodichas. 
-
-\subsection{MeanShift}
-
-En este caso, el resultado de MeanShift propone establecer cinco clusters:
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño de los clusters                                                                                                                         \\ \hline
-		5           & 0.04  & 0.47819   & 230.589          & \begin{tabular}[c]{@{}c@{}}0:   147 (34.19\%)\\ 1:   138 (32.09\%)\\ 2:    70 (16.28\%)\\ 4:    38 ( 8.84\%)\\ 3:    37 ( 8.60\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Como se puede apreciar, el valor de las métricas es menor que los resultados de 6 y 8 clusters estudiados anteriormente, lo que generará una menor claridad en las relaciones entre variables (a priori).
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.8]{heatmap-ms2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap MeanShift Caso 2} 
-	\label{fig:hm-ms-caso2}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{meanshift2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter MeanShift Caso 2} 
-	\label{fig:sc-ms-caso2}
-\end{figure}
-
-MeanShift polariza de nuevo mucho entre mujeres que trabajan en sitios muy poblados y poco poblados, habiendo correlación entre trabajar en sitio poco poblados y vivir también en lugares despoblados. Ello acarrea un mayor tiempo de desplazamiento  (salvo en el cluster 1, que hay una excepción). Por otra parte, señala que la mayoría de las mujeres científicas viven con su cónyuge excepto el cluster 3 (a diferencia de kMeans) y gradúa la formación de dichos cónyuges de forma que las mujeres mayores de la población de estudio (43 años y medios) tienen las parejas más formadas.
-\newpage
-
-\subsection{BIRCH}
-
-Los resultados de BIRCH para este caso son los siguientes:
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño de los clusters                                                                                                                                                                   \\ \hline
-		4           & 0.02  & 0.46699   & 247.660          & \begin{tabular}[c]{@{}c@{}}1:   147 (34.19\%)\\ 2:   138 (32.09\%)\\ 0:    73 (16.98\%)\\ 3:    72 (16.74\%)\end{tabular}                                                                \\ \hline
-		5           & 0.02  & 0.47819   & 230.906          & \begin{tabular}[c]{@{}c@{}}1:   147 (34.19\%)\\ 0:   138 (32.09\%)\\ 3:    72 (16.74\%)\\ 4:    38 ( 8.84\%)\\ 2:    35 ( 8.14\%)\end{tabular}                                           \\ \hline
-		7           & 0.04  & 0.64965   & 454.423          & \begin{tabular}[c]{@{}c@{}}2:    92 (21.40\%)\\ 0:    75 (17.44\%)\\ 3:    72 (16.74\%)\\ 6:    63 (14.65\%)\\ 1:    55 (12.79\%)\\ 4:    38 ( 8.84\%)\\ 5:    35 ( 8.14\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Como se puede ver, se tiende a 7-8 clusters, como ya recomendaba Elbow Method de kMeans. En particular, BIRCH encuentra 7 subclusters así que no contempla un número mayor. Como 7 es el mejor de los resultados, muestro sus gráficos.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.65]{heatmap-br-2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap BIRCH Caso 2} 
-	\label{fig:hm-br-caso2}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{birch2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter BIRCH Caso 2} 
-	\label{fig:sc-br-caso2}
-\end{figure}
-
-Con este resultado se recupera la distinción entre mujeres de entre 30 y 35 años que no conviven con sus cónyuges y las demás. Se vuelve a enfatizar que la formación de dichos cónyuges es menor que la de ellas y que la mayoría no tienen que emplear mucho tiempo para ir al trabajo, siendo las que más tiempo necesitan aquellas que trabajan en lugares con poca población, probablemente lejos de la capital o grandes núcleos de población (aquellas que viven en lugares con más de 20000 habitantes registran los desplazamientos más largos (cluster 0 y 6)).
 
 \newpage
 
-\subsection{DBSCAN}
+\subsection{Modelo}
 
-Como en el caso anterior y los siguientes, juego con los parámetros epsilon y min\_samples para ver cuál es la combinación óptima:
+Tras el ajuste, tenemos el siguiente modelo:
 
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                              \\ \hline
-		8           & 0.01  & 0.3     & 10           & 0.68578   & 426.905          & \begin{tabular}[c]{@{}c@{}}2:    92 (21.40\%)\\ 0:    74 (17.21\%)\\ 1:    58 (13.49\%)\\ 7:    55 (12.79\%)\\ 5:    37 ( 8.60\%)\\ 3:    36 ( 8.37\%)\\ 4:    34 ( 7.91\%)\\ 6:    32 ( 7.44\%)\\ -1:    12 ( 2.79\%)\end{tabular} \\ \hline
-		7           & 0.01  & 0.3     & 30           & 0.56046   & 248.475          & \begin{tabular}[c]{@{}c@{}}1:    88 (20.47\%)\\ 0:    73 (16.98\%)\\ -1:    69 (16.05\%)\\ 3:    55 (12.79\%)\\ 4:    46 (10.70\%)\\ 2:    36 ( 8.37\%)\\ 5:    33 ( 7.67\%)\\ 6:    30 ( 6.98\%)\end{tabular}                      \\ \hline
-		7           & 0.01  & 0.2     & 15           & 0.51824   & 173.297          & \begin{tabular}[c]{@{}c@{}}-1:    97 (22.56\%)\\ 2:    77 (17.91\%)\\ 0:    69 (16.05\%)\\ 3:    51 (11.86\%)\\ 5:    42 ( 9.77\%)\\ 6:    33 ( 7.67\%)\\ 1:    33 ( 7.67\%)\\ 4:    28 ( 6.51\%)\end{tabular}                      \\ \hline
-		4           & 0.01  & 0.5     & 50           & 0.48033   & 222.619          & \begin{tabular}[c]{@{}c@{}}-1:   149 (34.65\%)\\ 2:    92 (21.40\%)\\ 0:    74 (17.21\%)\\ 1:    60 (13.95\%)\\ 3:    55 (12.79\%)\end{tabular}                                                                                     \\ \hline
-	\end{tabular}
-\end{table}
-
-Como se puede ver, para las parejas (epsilon,min\_samples) = (0.3,30) y (0.2,15) se obtienen el mismo número de clusters pero las métricas arrojan resultados distintos. Esto indica que, a pesar de formar el mismo número de clusters, la inclusión de instancias en unos u otros es más acertada con la configuración primera. Por otra parte, el mejor resultado se obtiene con 8 clusters (0.3,10). 
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+ \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.465]{heatmap-dbscan2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap DBSCAN Caso 2} 
-	\label{fig:hm-db-caso2}
+	\includegraphics[scale=0.4]{rf.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Random Forest} 
+	\label{fig:RF}
 \end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{dbscan2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter DBSCAN Caso 2} 
-	\label{fig:sc-db-caso2}
-\end{figure}
-
-Según podemos observar, el resultado indica que las mujeres más jóvenes (29-35 años) no conviven con sus cónyuges y que el resto sí, cuyos niveles de formación llegan a tercer grado (los más altos). Sorprendentemente la relación entre estudio de los cónyuges y municipio donde viven están muy polarizada, como si se estableciera la vivienda prácticamente en función de los estudios de la pareja. Por otra parte, vemos gran correlación entre el lugar donde vive y el lugar donde trabaja, estando los clusters muy separados. En este sentido, las mujeres de 43 años trabajan y viven en lugares con poca población (aunque por el tiempo de desplazamiento, no parece que sea el mismo núcleo), mientras que las mujeres de alrededor de 30 años viven en lugares con poca población y trabajan en lugares con mucha que están realmente cerca (el centro y algún pueblo cercano tipo Cenes de la Vega, Huétor-Vega o Cájar).
-
-\subsection{Aglomerativo}
-
-Lo primero que es llamativo para este algoritmo es el número de instancias que tenemos. En general se hace una disminución en pos del rendimiento. Sin embargo, en este caso no hace falta debido a que hay 430 instancias. Esto es una muestra de la situación minoritaria de mujeres ingenieras en Granada en 2011. Por tanto, como en los demás casos, elimino outliers y se obtiene el siguiente dendograma:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.7]{dendograma2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Dendograma clustering jerárquico caso 2} 
-	\label{fig:dg-caso2}
-\end{figure}
-
-A raíz del dendograma, elijo 10 como el número de clusters a estudiar, obteniendo
-
-\begin{table}[H]
-	\centering
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Nº Clusters & Tiempo(s) & Tamaño de los clusters                                                                                                                         \\ \hline
-		10           & 0.01      & \begin{tabular}[c]{@{}c@{}}0:    92 (21.40\%) \\
-			2:    55 (12.79\%) \\
-			4:    54 (12.56\%) \\
-			3:    42 ( 9.77\%) \\
-			1:    38 ( 8.84\%) \\
-			7:    36 ( 8.37\%) \\
-			5:    36 ( 8.37\%) \\
-			6:    35 ( 8.14\%) \\
-			8:    33 ( 7.67\%)\\
-			9:     9 ( 2.09\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Se obtienen las siguientes gráficas:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.7]{heatmap-jerarquico2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap jerárquico caso 2} 
-	\label{fig:heatmap-jerarq-caso2}
-\end{figure}
-
-La distinción en más clusters nos hace ver un grupo de científicas que emplean gran tiempo en ir a trabajar. Los demás resultados son parecidos a los ya comentados.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{clustermap2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Clustermap jerárquico caso 2} 
-	\label{fig:clustermap-caso2}
-\end{figure}
-
-\subsection{Interpretación de la segmentación}
-
-Tras el estudio realizado, lo primero reseñable es el número de instancias que se poseen. Sólo 430 mujeres fueron censadas en 2011 como ingenieras o arquitectas. La horquilla de edad es aproximadamente entre 30 y 43 años. La mayoría de ellas viven y trabajan en una localidad de más de 20000 habitantes, aunque también se alternan municipios con menos población (entre 2000 y 5000). Podemos ver que aquellas entre 30 y 35 años aún no conviven con sus cónyuges. A partir de los 35 la tendencia cambia. Dichos cónyuges responden a un patrón de persona con formación alta (entorno al tercer grado) y en ciertas gráficas se encuentra correlación entre la formación del cónyuge y su domicilio. Cómo se ha visto, se antoja 8 como número óptimo de clusters. 
 
 \newpage
+ 
+\section{Solución 2}
 
-\section{Caso de estudio 3: Hogares biparentales con hijos menores de 25 años}
-
-El siguiente caso que me ocupa es el estudio de hogares biparentales con hijos menores de 25 años. Para ello, impongo \textit{ESTHOG==08} e \textit{HIJOS<=25}. Además, utilizo las siguientes características:
-
-\begin{itemize}
-	\item NPFAM
-	\item H6584
-	\item ANOCONS
-	\item ESTADO
-	\item DIFEDAD
-	\item CMUNN
-\end{itemize}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{capt4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Configuración caso 3} 
-	\label{fig:conf-caso3}
-\end{figure}
-
-
-\subsection{kMeans}
-
-Como en los casos anteriores, comprobamos el resultado que ofrece Elbow Method.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.61]{em-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Salida de Elbow Methow} 
-	\label{fig:em-caso3}
-\end{figure}
-
-
-Como se puede ver, Elbow Method indica que 2 es el número de clusters más interesante.
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                    \\ \hline
-		2           & 0.11  & 0.61423   & 74160.226        & \begin{tabular}[c]{@{}c@{}}0: 18941 (50.58\%)\\ 1: 18505 (49.42\%)\end{tabular}                                           \\ \hline
-		4           & 0.34  & 0.478221  & 39081.008        & \begin{tabular}[c]{@{}c@{}}0: 18160 (48.50\%)\\ 1: 12766 (34.09\%)\\ 3:  5809 (15.51\%)\\ 2:   711 ( 1.90\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.65]{heatmap-km-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap kMeans Caso 3} 
-	\label{fig:hm-km-caso3}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{kmeans-3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter kMeans Caso 3} 
-	\label{fig:sc-km-caso3}
-\end{figure}
-
-A la luz de los resultados, la característica determinante entre los dos grupos es el municipio donde viven. Por lo demás, la mayoría tienen 4 personas en la familia y ningún mayor de entre 65 y 84 años en la casa. El estado del edificio suele ser bueno (entorno a 4). Por otra parte, el scatter matrix indica que las casas donde viven personas mayores suelen ser más nuevas. Asimismo, el hombre del núcleo suele ser entre 1 y 4 años mayor que la mujer, estando esta característica homogéneamente distribuida entre todas las demás.
-
-\subsection{MeanShift}
-
-Examino ahora los resultados dados por MeanShift en este caso. Primeramente, veamos sus estadísticas:
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                                                                                                                                                                                                            \\ \hline
-		17          & 3.85  & 0.35109   & 7656.987         & \begin{tabular}[c]{@{}c@{}}1: 17931 (47.88\%)\\ 0: 17564 (46.90\%)\\ 3:   451 ( 1.20\%)\\ 2:   425 ( 1.13\%)\\ 4:   257 ( 0.69\%)\\ 5:   234 ( 0.62\%)\\ 8:   229 ( 0.61\%)\\ 9:   170 ( 0.45\%)\\ 13:    84 ( 0.22\%)\\ 6:    54 ( 0.14\%)\\ 7:    24 ( 0.06\%)\\ 10:     6 ( 0.02\%)\\ 11:     6 ( 0.02\%)\\ 12:     5 ( 0.01\%)\\ 14:     3 ( 0.01\%)\\ 15:     2 ( 0.01\%)\\ 16:     1 ( 0.00\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Como se puede observar, el nivel es algo desproporcionado con respecto a los resultados anteriores y las métricas reflejan valores más pobres. La interpretabilidad con 17 clusters se complica. Veamos las gráficas asociadas.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.55]{heatmap-ms3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap MeanShift Caso 3} 
-	\label{fig:hm-ms-caso3}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{meanshift3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter MeanShift Caso 3} 
-	\label{fig:sc-ms-caso3}
-\end{figure}
-
-Como se puede observar, si se relacionan las características del código del municipio y el año de construcción, los clusters se dividen en dos grupos totalmente diferenciados: núcleos con menos de 5000 habitantes y núcleos con más de 20000. En aquellos con más habitantes se distingue que las viviendas son más modernas.
-
- \newpage
-\subsection{BIRCH}
-
-En este caso, y a la luz de los resultados de MeanShift y kMeans, decido elegir 2 clusters para configurar BIRCH.
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                          \\ \hline
-		2           & 1.15  & 0.61423   & 74160.226        & \begin{tabular}[c]{@{}c@{}}1: 18941 (50.58\%)\\ 0: 18505 (49.42\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.8]{heatmap-br3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap BIRCH Caso 3} 
-	\label{fig:hm-br-caso3}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{birch3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter BIRCH Caso 3} 
-	\label{fig:sc-br-caso3}
-\end{figure}
-
-Los resultados obtenidos con BIRCH para dos clusters coinciden prácticamente con kMeans para dos clusters, por lo que la interpretación es la misma que hice en el apartado anterior.
-
-\newpage
-
-\subsection{DBSCAN}
-
-En DBSCAN juego con los distintos valores de epsilon y min-samples.
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                                                                                                                                                                                \\ \hline
-		5           & 23.02 & 0.4     & 30           & 0.43766   & 16288.189        & \begin{tabular}[c]{@{}c@{}}3: 18654 (49.82\%)\\ 4: 18173 (48.53\%)\\ 1:   257 ( 0.69\%)\\ 0:   234 ( 0.62\%)\\ -1:    68 ( 0.18\%)\\ 2:    60 ( 0.16\%)\end{tabular}                                                                                                                                                                                                  \\ \hline
-		10          & 13.55 & 0.2     & 50           & 0.25908   & 11537.189        & \begin{tabular}[c]{@{}c@{}}2: 17454 (46.61\%)\\ 3: 16624 (44.39\%)\\ 5:   911 ( 2.43\%)\\ 6:   613 ( 1.64\%)\\ -1:   512 ( 1.37\%)\\ 8:   316 ( 0.84\%)\\ 9:   302 ( 0.81\%)\\ 1:   219 ( 0.58\%)\\ 0:   199 ( 0.53\%)\\ 4:   195 ( 0.52\%)\\ 7:   101 ( 0.27\%)\end{tabular}                                                                                         \\ \hline
-		6           & 22.65 & 0.4     & 15           & 0.43626   & 13629.742        & \begin{tabular}[c]{@{}c@{}}4: 18654 (49.82\%)\\ 5: 18173 (48.53\%)\\ 1:   257 ( 0.69\%)\\ 0:   234 ( 0.62\%)\\ 2:    60 ( 0.16\%)\\ -1:    35 ( 0.09\%)\\ 3:    33 ( 0.09\%)\end{tabular}                                                                                                                                                                             \\ \hline
-		14          & 13.37 & 0.2     & 10           & 0.27210   & 8919.250         & \begin{tabular}[c]{@{}c@{}}4: 17465 (46.64\%)\\ 5: 16629 (44.41\%)\\ 9:   941 ( 2.51\%)\\ 7:   625 ( 1.67\%)\\ 10:   316 ( 0.84\%)\\ 11:   306 ( 0.82\%)\\ 1:   242 ( 0.65\%)\\ 6:   235 ( 0.63\%)\\ 0:   219 ( 0.58\%)\\ -1:   165 ( 0.44\%)\\ 8:   161 ( 0.43\%)\\ 12:    53 ( 0.14\%)\\ 2:    52 ( 0.14\%)\\ 3:    21 ( 0.06\%)\\ 13:    16 ( 0.04\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-La tabla refleja que el número de clusters óptimo en este caso es 5, es decir, (0.4,30).
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.8]{heatmap-dbscan3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap DBSCAN Caso 3} 
-	\label{fig:hm-db-caso3}
-\end{figure}
-
-El cluster 2 revela un conjunto de hogares en los que viven al menos dos ancianos (viviendo en un municipio poco poblado) y, contradictoriamente con los resultados anteriores, las casas son las más antiguas en media (entorno a 1965). Por otra parte, la diferencia entre edades del hombre y la mujer aumentan. 
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{dbscan3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter DBSCAN Caso 3} 
-	\label{fig:sc-db-caso3}
-\end{figure}
-
-\subsection{Aglomerativo}
-
-Veamos el último algoritmo de este caso. Como en los anteriores, elimino outliers y estudio su dendograma:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.6]{dg3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Dendograma del caso 3}
-	\label{fig:dg-caso3}
-\end{figure}
-
-Escojo, como consecuencia del dendograma, 15 clusters y, de los 1000 elementos, se seleccionan 674.
-
-\begin{table}[H]
-	\centering
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Tamaño                                                                                                                                                                                                                                                                                                                                                                \\ \hline
-		15          & 0.03  & \begin{tabular}[c]{@{}c@{}}2:   220 (22.00\%)\\ 4:   150 (15.00\%)\\ 5:   106 (10.60\%)\\ 1:   101 (10.10\%)\\ 0:    85 ( 8.50\%)\\ 14:    75 ( 7.50\%)\\ 6:    59 ( 5.90\%)\\ 7:    53 ( 5.30\%)\\ 12:    50 ( 5.00\%)\\ 3:    44 ( 4.40\%)\\ 13:    21 ( 2.10\%)\\ 11:    10 ( 1.00\%)\\ 8:    10 ( 1.00\%)\\ 10:     9 ( 0.90\%)\\ 9:     7 ( 0.70\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-A partir de aquí, examino los gráficos.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.38]{clustermap3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Clustermap cluster jerárquico Caso 3} 
-	\label{fig:clustermap-caso3}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.8]{heatmap-jerarquico3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap cluster jerárquico Caso 3} 
-	\label{fig:heatmapj-caso3}
-\end{figure}
-
-Los resultados arrojados por el clustering jerárquico apenas reflejan que haya mayores de 65 años viviendo en hogares como los que estudiamos. Se observan claras alternancias en los códigos de los municipios y se encuentran datos desconocidos en relación a la antigüedad de las viviendas en el cluster 8 y 9 (apenas un 1.7\% de los datos). Asimismo, el estado del edificio suele ser bueno en la mayoría de los casos. La diferencia de edad entre el hombre y la mujer se fija, siendo el hombre mayor entre 1 y 4 años.
-
-\subsection{Interpretación de la segmentación}
-
-Tras los distintos algoritmos de clustering, se encuentra que los hogares biparentales con hijos menores de 25 años suelen estar formados por 4 miembros. La mayoría de ellos viven en edificios en buen estado y con viviendas construidas en los últimos 10-15 años y tienden a ser en municipios con más de 20000 habitantes, aunque esta característica depende del algoritmo. La diferencia de edad entre el hombre y la mujer suele oscilar entre 1 y 4 años. En ocasiones, esas familias están complementadas con un anciano de entre 64 y 85 años y, más raramente, por dos ancianos de la misma edad. 
-
-\section{Caso de estudio 4: Mujeres trabajadoras y hogar}
-
-El último caso de estudio se basa en las mujeres con un trabajo  a tiempo completo que se encargan mayoritariamente de las tareas domésticas. Para extraer el subconjunto de instancias, filtro por \textit{SEXO==6}, \textit{TAREA4==1} y \textit{JORNADA==1}. Además, elijo las siguientes características:
-
-\begin{itemize}
-	\item EDAD
-	\item NHIJOS
-	\item ESREAL
-	\item TDESP
-	\item EDADCON
-\end{itemize}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{capt5.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Configuración del caso 4} 
-	\label{fig:configuración-caso4}
-\end{figure}
-
-Existen 5710 instancias de este caso.
-
-\subsection{kMeans}
-
-Como en el resto de casos, examino el resultado de Elbow Method para elegir el número de clusters en kMeans.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.45]{em4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Salida de Elbow Methow} 
-	\label{fig:em-caso4}
-\end{figure}
-
-No es muy clara la respuesta así que examino varios casos.
-
-\begin{table}[H]
-			\centering
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                                                                                                                        \\ \hline
-		2           & 0.07  & 0.33936   & 2698.856         & \begin{tabular}[c]{@{}c@{}}0:  3893 (68.18\%)\\ 1:  1817 (31.82\%)\end{tabular}                                                                                                                               \\ \hline
-		3           & 0.11  & 0.30264   & 2603.859         & \begin{tabular}[c]{@{}c@{}}0:  2139 (37.46\%)\\ 2:  1792 (31.38\%)\\ 1:  1779 (31.16\%)\end{tabular}                                                                                                          \\ \hline
-		5           & 0.16  & 0.29652   & 2232.567         & \begin{tabular}[c]{@{}c@{}}4:  1767 (30.95\%)\\ 1:  1189 (20.82\%)\\ 2:   987 (17.29\%)\\ 3:   950 (16.64\%)\\ 0:   817 (14.31\%)\end{tabular}                                                                \\ \hline
-		8           & 0.26  & 0.26421   & 1995.748         & \begin{tabular}[c]{@{}c@{}}3:   934 (16.36\%)\\ 7:   789 (13.82\%)\\ 2:   772 (13.52\%)\\ 0:   769 (13.47\%)\\ 5:   717 (12.56\%)\\ 6:   649 (11.37\%)\\ 1:   594 (10.40\%)\\ 4:   486 ( 8.51\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Las métricas no son muy satisfactorias. Aún así, el resultado para dos clusters es el mejor, así que ese elijo.
-
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{heatmap-km4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap kMeans Caso 4} 
-	\label{fig:hm-km-caso4}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.38]{kmeans4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter kMeans Caso 4} 
-	\label{fig:sc-km-caso4}
-\end{figure}
-
-Las gráficas muestran mujeres algo mayores de 45 años, la mayoría con 2 hijos. Tienen una formación de grado medio o superior y la mayoría tienen un cónyuge de alrededor de 40 años, aunque el 31\% de las mujeres no convive con el cónyuge. Para aquellas que tienen cónyuge, la edad del mismo y su edad es lineal (aunque la variable EDADCON está escalada). En ambos clusters, los desplazamientos van entre 10 y 25 minutos.
-
-\subsection{MeanShift}
-
-En este caso, MeanShift no produce resultados. El algoritmo no detecta más que un cluster, luego no nos resulta útil. He aquí la demostración:
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.45]{resultado-caso4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Sin resultado de MeanShift} 
-	\label{fig:sc-ms-caso4}
-\end{figure}
-
-\subsection{BIRCH}
-
-El algoritmo BIRCH encuentra como máximo 2 subgrupos así que el único resultado factible es 2 clusters.
-
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Silhoutte & Calinski-Harabaz & Tamaño                                                                          \\ \hline
-		2           & 0.22  & 0.3389    & 2698.105         & \begin{tabular}[c]{@{}c@{}}1:  3877 (67.90\%)\\ 0:  1833 (32.10\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.5]{heatmap-br4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap BIRCH Caso 4} 
-	\label{fig:hm-br-caso4}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.38]{birch4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter BIRCH Caso 4} 
-	\label{fig:sc-br-caso4}
-\end{figure}
-
-Volvemos a encontrar las mismas relaciones que en kMeans de 2 clusters. Parece interesante que en el heatmap el nivel de estudios de las mujeres del cluster 0 ha subido, y lo que diferencia los dos clusters es la edad de los cónyuges. A pesar de que la media es 0.140 en el primero, realmente refleja que esas mujeres no viven con sus cónyuges. También presentan un número de hijos menor.
-
-\subsection{DBSCAN}
-
-Cambiando los valores de epsilon y min-samples obtengo los siguientes resultados.
-
-\begin{table}[H]
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Epsilon & Min\_Samples & Silhoutte & Calinski-Harabaz & Tamaño                                                                                                \\ \hline
-		2           & 0.29  & 0.2     & 50           & 0.33003   & 1354.290         & \begin{tabular}[c]{@{}c@{}}1:  3831 (67.09\%)\\ 0:  1713 (30.00\%)\\ -1:   166 ( 2.91\%)\end{tabular} \\ \hline
-		1           & 0.4   & 0.3     & 10           & 0.33973   & 20.495           & \begin{tabular}[c]{@{}c@{}}0:  5699 (99.81\%)\\ -1:    11 ( 0.19\%)\end{tabular}                      \\ \hline
-		2           & 0.18  & 0.15    & 20           & 0.31263   & 1329.881         & \begin{tabular}[c]{@{}c@{}}1:  3670 (64.27\%)\\ 0:  1626 (28.48\%)\\ -1:   414 ( 7.25\%)\end{tabular} \\ \hline
-	\end{tabular}
-\end{table}
-
-Así como en MeanShift, el mejor resultado se da englobando todos los casos en un mismo cluster, excepto 11 elementos ruidosos. Sin embargo, teniendo en cuenta Calinski-Harabaz, examino la pareja (0.2,50).
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.65]{heatmap-dbscan4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap DBSCAN Caso 4} 
-	\label{fig:hm-db-caso4}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.37]{dbscan4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Scatter DBSCAN Caso 4} 
-	\label{fig:sc-db-caso4}
-\end{figure}
-
-Se puede observar en el scatter matrix que los dos clusters están bien diferenciados en el número de hijos. Mientras la mayoría de las mujeres del cluster 0 no llega a un hijo en media, el pico para el cluster 1 se sitúa en dos hijos. Por otra parte, en relación con los estudios y la edad, las mujeres que tienen más formación están entre los 25 y los 50 años. No parece haber mujeres que trabajen mayores de 50 años con más formaciones profesionales reguladas. Los valores se acumulan entorno al número 2 en ESREAL, lo que indica que apenas fueron al colegio. En cuanto al tiempo de desplazamiento, la mayoría es cercano a 0 o niveles bajos, lo que indica que las mujeres en este caso trabajan cerca de casa. Además, de entre las que cohabitan con sus cónyuges, vuelve a verse una correlación entre la formación del cónyuge y su edad, aunque difusa y escalada. Se puede ver como las mujeres que tienen muchos hijos (5 y especialmente 6) son pocas y además tienen una formación media.
-
-\newpage
-
-\subsection{Aglomerativo}
-
-Tras eliminar outliers con un clustering aglomerativo de 100 grupos, examino el dendograma para elegir el número verdadero de clusters.
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.65]{dg4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Dendograma del caso 4}
-	\label{fig:dg4}
-\end{figure}
-
-No consigo extraer un número adecuado de clusters así que he jugado con los siguientes casos:
-
-\begin{table}[H]
-	\centering
-	\resizebox{6cm}{!}{
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Nº Clusters & T (s) & Tamaño                                                                                                                                                                                                        \\ \hline
-		4           & 0.03  & \begin{tabular}[c]{@{}c@{}}0:   354 (35.40\%)\\ 2:   342 (34.20\%)\\ 3:   156 (15.60\%)\\ 1:   148 (14.80\%)\end{tabular}                                                                                     \\ \hline
-		6           & 0.03  & \begin{tabular}[c]{@{}c@{}}2:   247 (24.70\%)\\ 4:   188 (18.80\%)\\ 0:   166 (16.60\%)\\ 3:   156 (15.60\%)\\ 1:   148 (14.80\%)\\ 5:    95 ( 9.50\%)\end{tabular}                                           \\ \hline
-		8           & 0.04  & \begin{tabular}[c]{@{}c@{}}4:   188 (18.80\%)\\ 1:   156 (15.60\%)\\ 3:   154 (15.40\%)\\ 0:   148 (14.80\%)\\ 5:    95 ( 9.50\%)\\ 7:    93 ( 9.30\%)\\ 6:    91 ( 9.10\%)\\ 2:    75 ( 7.50\%)\end{tabular} \\ \hline
-	\end{tabular}
-	}
-\end{table}
-
-Según los porcentajes, cuando se definen 6  clusters los tamaños de los mismos se asemejan más entre sí que en los otros casos. Por tanto, elijo 6 como el número de clusters.
-
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.4]{clustermap4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Clustermap cluster jerárquico Caso 4} 
-	\label{fig:clustermap-caso4}
-\end{figure}
-
-\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
-	\centering
-	\includegraphics[scale=0.7]{heatmap-jerarquico4.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Heatmap cluster jerárquico Caso 4} 
-	\label{fig:heatmapj-caso4}
-\end{figure}
-
-Según estos resultados, hay mujeres de alrededor de 43 años con estudios menores que bachillerato y que no habitan con su cónyuge y otras de 45 años con estudios superiores universitarios que tampoco. Curiosamente estás últimas son las que menos hijos en media tienen. El resto viven con sus cónyuges, cuyas edades se asemejan bastante a la de sus mujeres. El número de hijos se centra entre 1 y 2 y el tiempo de desplazamiento suele ser leve salvo en el caso de las mujeres de 34 años y 51, que tardan algo más de media hora en desplazarse. 
-
-\subsection{Interpretación de la segmentación}
-
-A la luz de los distintos resultados, podemos inferir que la mujer trabajadora y que se ocupa mayormente de las tareas de la casa es de mediana edad (35-50 años). Hemos visto que la relación entre nivel de estudios y número de hijos es inversamente proporcional, lo que puede reflejar la dificultad actual en la conciliación laboral y familiar. También se ha reflejado que las más formadas no viven con sus cónyuges y en la mayoría de las ocasiones su tiempo de desplazamiento es mayor, lo que puede indicar que, debido a su formación, tienen que desplazarse a empresas más lejos de sus viviendas, mientras que las mujeres menos formadas trabajan en su localidad o en zonas muy cercanas.  Otro dato interesante es que el número de mujeres en este caso son 5710. Muchas más habrá que trabajen a tiempo parcial por ocuparse principalmente de las tareas domésticas. Estos datos indican que en 2011 en Granada las mujeres se veían más atadas a los quehaceres de casa más que sus cónyuges por lo que la conciliación entre su vida laboral y personal se dificulta. Revertir esta situación sería trascendental en nuestra provincia en términos económicos y de igualdad.
-\newpage
+ 
 \section{Bibliografía}
 
 %------------------------------------------------
