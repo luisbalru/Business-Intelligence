@@ -61,7 +61,7 @@ plt.show()
 
 # Inspecting Cardinality of Categorical Data
 
-cat_df = pd.DataFrame(columns=["Feature", "Cardinality","% Missings"])
+cat_df = pd.DataFrame(columns=["Característica", "Cardinal","MV"])
 
 total_cardinality = 0
 
@@ -69,14 +69,14 @@ i=0
 
 for col in train.columns:
     if (train[col].dtype == np.object):
-        cat_df.loc[i,"Feature"] = col
-        cat_df.loc[i,"Cardinality"] = len(train[col].unique())
+        cat_df.loc[i,"Característica"] = col
+        cat_df.loc[i,"Cardinal"] = len(train[col].unique())
         total_cardinality += len(train[col].unique())
         pct_of_missing_values = float((len(train[col]) - train[col].count()) / len(train[col]))
-        cat_df.loc[i,"% Missings"] = pct_of_missing_values*100
+        cat_df.loc[i,"MV"] = pct_of_missing_values*100
         i+=1
 
-print("Total cardinality of categorical features:",total_cardinality)
+print("Variables categóricas:",total_cardinality)
 
 display(cat_df)
 
@@ -264,64 +264,15 @@ display(combineddf[numeric_features.columns].head())
 
 
 
-#Encoding status_group of train to pass it through our models
-y = training_labels.status_group
-LEncoder = LabelEncoder()
-LEncoder.fit(y)
-labels = LEncoder.transform(y)
-print(LEncoder.classes_)
-
-
-
-display(labels)
-
-
-
 # Preparing Training, Validation and Test Data for Modeling
 
 
 x = combineddf[:train.shape[0]]
 test_data = combineddf[train.shape[0]:]
 
-
-x.to_csv("pythonoutputtrain.csv")
-test_data.to_csv("pythonoutputtest.csv")
-
-temp_forid = combineddf[train.shape[0]:]
-test_ids= temp_forid.id
-
 # Split training and validation data
 x, labels = shuffle(x, labels, random_state= 10)
 X_train, X_valid, y_train, y_valid = train_test_split(x, labels, train_size=0.8, random_state=10)
-
-## BUILDING MODELS
-
-
-
-RF_model = RandomForestClassifier(n_estimators=1000)
-RF_model.fit(X_train, y_train)
-y_pred = RF_model.predict(X_valid)
-
-#Accuracy on validation data
-acc=accuracy_score(y_valid, y_pred)
-fscore = fbeta_score(y_valid, y_pred, average='weighted', beta=0.5)
-print('RF Accuracy:', acc)
-print('RF Fbeta score:', fscore)
-
-#this is my base model - score was ~80.1 with this on the leaderboard.Not going with this for final submission unless I do an ensemble; used it to infer feature importances
-#manhattan distance has lower importance than latitude longitude (based on past trials)
-#but it's represented better, so will keep manhattan distance as is; plus CatBoost performs better with this feature than lat and long
-
-#Finally decided to remove Manhattan distance and just keep the cartesian coordinates, because catboost did not perform well
-
-
-
-features = RF_model.feature_importances_
-imp_features = np.argsort(features)[::-1]
-k = 20
-print(x[:train.shape[0]].columns[imp_features[:10]])
-series_imp_features = pd.Series(features[imp_features[:k]], x[:train.shape[0]].columns[imp_features[:k]])
-series_imp_features.plot(kind='bar')
 
 # catboost model
 
@@ -416,54 +367,10 @@ temp.plot()
 temp.plot(kind='barh', x='feature', y='fscore', legend=False, figsize=(6, 10))
 plt.title('XGBoost Feature Importance')
 plt.xlabel('relative importance')
-"""
-## BAYESIAN-OPTIMIZATION FOR hyperparameter
 
-#Defining function for optimizing XGBoost - can also do this for other models like RF
-def xgbcv(max_depth,
-          learning_rate,
-          n_estimators,
-          min_child_weight,
-          gamma,
-          subsample,
-          colsample_bytree,
-          reg_alpha,
-          reg_lambda,
-          silent=True):
-    return cv_s(xgb.XGBClassifier(max_depth=int(max_depth),
-                                 learning_rate=learning_rate,
-                                 n_estimators=int(n_estimators),
-                                 gamma=gamma,
-                                 reg_alpha=reg_alpha,
-                                 min_child_weight=min_child_weight,
-                                 objective='multi:softmax'),
-                    x,
-                    labels,
-                    "accuracy",
-                    cv=4).mean()
-
-##Setting range of parameters for optimization
-xgboostBO = BayesOpt(xgbcv,
-                                 {
-                                  'max_depth': (4,23),
-                                  'learning_rate': (0.01, 0.2),
-                                  'n_estimators': (200,600),
-                                  'gamma': (0.01, 10),
-                                  'min_child_weight': (1,40),
-                                  'subsample': (0.2, 1),
-                                  'colsample_bytree' :(0.2, 1),
-                                  'reg_alpha':(0, 10),
-                                  'reg_lambda':(0, 10)
-                                  })
-
-print ("Start Optimization of Main Model")
-#xgboostBO.maximize(init_points=10,n_iter=110, xi=0.0,  acq="poi")
-"""
-#Best parameters from Bayes-opt for accuracy as a metric
 param = {
                   'max_depth' : 19,
                   'learning_rate': 0.0486,
-                  #'n_estimators': 591,  #removed and mentioned as num_boost_round; same thing
                   'gamma': 0.0354,
                   'min_child_weight': 19.2455,
                   'subsample': 0.9842,
