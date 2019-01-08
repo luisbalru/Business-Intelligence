@@ -1,9 +1,3 @@
-
-"""
-
-This files stores all the essential helper functions for variable pre-processing
-
-"""
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -11,41 +5,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.decomposition import PCA
 
 
-def removal(X_train, X_test):
-    """
-    Here we define all the columns that we want to delete right off the bat.
-
-    # id: we drop the id column because it is not a useful predictor.
-    # 'amount_tsh' is mostly blank - delete
-    # wpt_name: not useful, delete (too many values)
-    # subvillage: too many values, delete
-    # scheme_name: this is almost 50% nulls, so we will delete this column
-    # num_private: we will delete this column because ~99% of the values are zeros.
-    # region: drop this b/c is seems very similar to region_code, though not 100% sure about this one!
-    """
-    z = ['id', 'amount_tsh',  'num_private', 'wpt_name',
-          'recorded_by', 'subvillage', 'scheme_name', 'region',
-          'quantity', 'quality_group', 'source_type', 'payment',
-          'waterpoint_type_group',
-         'extraction_type_group']
-    for i in z:
-        del X_train[i]
-        del X_test[i]
-    return X_train, X_test
-
-
-def removal2(X_train, X_test):
-    """
-    Here we define all the columns that we want to delete right off the bat.
-
-    # id: we drop the id column because it is not a useful predictor.
-    # 'amount_tsh' is mostly blank - delete
-    # wpt_name: not useful, delete (too many values)
-    # subvillage: too many values, delete
-    # scheme_name: this is almost 50% nulls, so we will delete this column
-    # num_private: we will delete this column because ~99% of the values are zeros.
-    # region: drop this b/c is seems very similar to region_code, though not 100% sure about this one!
-    """
+def remov2(X_train, X_test):
     z = ['id','amount_tsh',  'num_private', 'region',
           'quantity', 'quality_group', 'source_type', 'payment',
           'waterpoint_type_group',
@@ -57,59 +17,12 @@ def removal2(X_train, X_test):
 
 
 def construction(X_train, X_test):
-    """
-    construction_year has 35% nulls, so we impute the nulls with the column mean
-    """
     for i in [X_train, X_test]:
         i['construction_year'].replace(0, X_train[X_train['construction_year'] != 0]['construction_year'].mean(), inplace=True)
     return X_train, X_test
 
-def construction2(X_train, X_test):
-    """
-    construction_year has 35% nulls, so we impute the nulls with the column mean
-    """
-    for i in [X_train, X_test]:
-        i['construction_year'].replace(0., np.NaN, inplace = True)
-        i['construction_year'].replace(1., np.NaN, inplace = True)
-        data = X_train.groupby(['funder'])['construction_year']
-        i['construction_year'] = data.transform(lambda x: x.fillna(x.mean()))
-        data = X_train.groupby(['installer'])['construction_year']
-        i['construction_year'] = data.transform(lambda x: x.fillna(x.mean()))
-        i['construction_year'].fillna(X_train['construction_year'].mean(), inplace=True)
-    return X_train, X_test
-
-def dates(X_train, X_test):
-    """
-    date_recorded: this might be a useful variable for this analysis, although the year itself would be useless in a practical scenario moving into the future. We will convert this column into a datetime, and we will also create 'year_recorded' and 'month_recorded' columns just in case those levels prove to be useful. A visual inspection of both casts significant doubt on that possibility, but we'll proceed for now. We will delete date_recorded itself, since random forest cannot accept datetime
-    """
-    for i in [X_train, X_test]:
-        i['date_recorded'] = pd.to_datetime(i['date_recorded'])
-        i['year_recorded'] = i['date_recorded'].apply(lambda x: x.year)
-        i['month_recorded'] = i['date_recorded'].apply(lambda x: x.month)
-        i['date_recorded'] = (pd.to_datetime(i['date_recorded'])).apply(lambda x: x.toordinal())
-    return X_train, X_test
-
-def dates2(X_train, X_test):
-    """
-    Turn year_recorded and month_recorded into dummy variables
-    """
-    for z in ['month_recorded', 'year_recorded']:
-        X_train[z] = X_train[z].apply(lambda x: str(x))
-        X_test[z] = X_test[z].apply(lambda x: str(x))
-        good_cols = [z+'_'+i for i in X_train[z].unique() if i in X_test[z].unique()]
-        X_train = pd.concat((X_train, pd.get_dummies(X_train[z], prefix = z)[good_cols]), axis = 1)
-        X_test = pd.concat((X_test, pd.get_dummies(X_test[z], prefix = z)[good_cols]), axis = 1)
-        del X_test[z]
-        del X_train[z]
-    return X_train, X_test
-
-
 
 def locs(X_train, X_test):
-    """
-    fill in the nulls for ['longitude', 'latitude', 'gps_height', 'population'] by using means from
-    ['subvillage', 'district_code', 'basin'], and lastly the overall mean
-    """
     trans = ['longitude', 'latitude', 'gps_height', 'population']
     for i in [X_train, X_test]:
         i.loc[i.longitude == 0, 'latitude'] = 0
@@ -132,10 +45,6 @@ def locs(X_train, X_test):
     return X_train, X_test
 
 def bools(X_train, X_test):
-    """
-    public_meeting: we will fill the nulls as 'False'
-    permit: we will fill the nulls as 'False
-    """
     z = ['public_meeting', 'permit']
     for i in z:
         X_train[i].fillna(False, inplace = True)
@@ -146,9 +55,6 @@ def bools(X_train, X_test):
 
 
 def codes(X_train, X_test):
-    """
-    convert region_code and district_code to string objects, since they are actually categorical variables
-    """
     for i in ['region_code', 'district_code']:
         X_train[i] = X_train[i].apply(lambda x: str(x))
         X_test[i] = X_test[i].apply(lambda x: str(x))
@@ -194,11 +100,3 @@ def pca(X_train,X_test,y_train, cols=['population','gps_height','latitude','long
     return X_train, X_test
 
 
-def small_n2(X_train, X_test):
-    cols = [i for i in X_train.columns if type(X_train[i].iloc[0]) == str]
-    X_train[cols] = X_train[cols].where(X_train[cols].apply(lambda x: x.map(x.value_counts())) > 100, "other")
-    for column in cols:
-        for i in X_test[column].unique():
-            if i not in X_train[column].unique():
-                X_test[column].replace(i, 'other', inplace=True)
-    return X_train, X_test

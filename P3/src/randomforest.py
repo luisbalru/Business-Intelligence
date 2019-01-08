@@ -18,17 +18,14 @@ y_train = pd.read_csv('/home/luisbalru/Universidad/Business-Intelligence/P3/data
 del y_train['id']
 
 
-X_train, X_test = preprocesamiento.dates(X_train, X_test)
-X_train, X_test = preprocesamiento.dates2(X_train, X_test)
 X_train, X_test = preprocesamiento.construction(X_train, X_test)
 X_train, X_test = preprocesamiento.bools(X_train, X_test)
 X_train, X_test = preprocesamiento.locs(X_train, X_test)
 X_train, X_test = preprocesamiento.codes(X_train,X_test)
-#X_train, X_test = preprocesamiento.meaningful(X_train,X_test,y_train)
 X_train['population'] = np.log(X_train['population'])
 X_test['population'] = np.log(X_test['population'])
-X_train, X_test = preprocesamiento.removal2(X_train, X_test)
-X_train, X_test = preprocesamiento.small_n2(X_train, X_test)
+X_train, X_test = preprocesamiento.remov2(X_train, X_test)
+#X_train, X_test = preprocesamiento.peques(X_train, X_test)
 # cols = ['gps_height', 'latitude', 'longitude']
 #X_train, X_test = preprocesamiento.pca(X_train, X_test, y_train)
 X_train, X_test = preprocesamiento.lda(X_train, X_test, y_train)
@@ -45,24 +42,24 @@ rf = RandomForestClassifier(criterion='gini',
                                 random_state=1,
                                 n_jobs=-1)
 
-param_grid = {"n_estimators" : [500, 750, 1000]}
+parametros = {"n_estimators" : [500, 750, 1000]}
 
-gs = GridSearchCV(estimator=rf,
-                  param_grid=param_grid,
+grid = GridSearchCV(estimator=rf,
+                  param_grid=parametros,
                   scoring='accuracy',
                   cv=2,
                   n_jobs=-1)
 
-gs = gs.fit(X_train, y_train.values.ravel())
+grid = grid.fit(X_train, y_train.values.ravel())
 
 
-print(gs.best_score_)
-print(gs.best_params_)
-print(gs.cv_results_)
+print(grid.best_score_)
+print(grid.best_params_)
+print(grid.cv_results_)
 """
 # Modelo
 
-rf = RandomForestClassifier(criterion='gini',
+modelo_random_forest = RandomForestClassifier(criterion='gini',
                                 min_samples_split=6,
                                 n_estimators=1000,
                                 max_features='auto',
@@ -70,18 +67,18 @@ rf = RandomForestClassifier(criterion='gini',
                                 random_state=1,
                                 n_jobs=-1)
 
-rf.fit(X_train, y_train.values.ravel())
-print("%.4f" % rf.oob_score_)
+modelo_random_forest.fit(X_train, y_train.values.ravel())
+print("%.4f" % modelo_random_forest.oob_score_)
 
 # Comprobando importancia de características
 
 pd.concat((pd.DataFrame(X_train.columns, columns = ['variable']),
-           pd.DataFrame(rf.feature_importances_, columns = ['importance'])),
+           pd.DataFrame(modelo_random_forest.feature_importances_, columns = ['importance'])),
           axis = 1).sort_values(by='importance', ascending = False)[:10]
 
 # Submission file
 
-predictions = rf.predict(X_test)
+prediccion = modelo_random_forest.predict(X_test)
 y_test = pd.read_csv('/home/luisbalru/Universidad/Business-Intelligence/P3/data/water_pump_submissionformat.csv')
 pred = pd.DataFrame(predictions, columns = [y_test.columns[1]])
 del y_test['status_group']

@@ -144,15 +144,15 @@ i=2
 #Create data frame to hold the 11 solutions developed by the model
 solution.table<-data.frame(id=data_test[,"id"])
 
-for (i in 2:12){
+for (i in 2:25){
   #Set seed so that the results are reproducible
   set.seed(i)
 
   #Cross validation to determine the number of iterations to run the model.
   #I tested this model with a variety of parameters to find the most accurate model
   xgb.tab = xgb.cv(data = train.DMatrix, objective = "multi:softmax", booster = "gbtree",
-                   nrounds = 500, nfold = 4, early.stop.round = 10, num_class = 4, maximize = FALSE,
-                   evaluation = "merror", eta = .2, max_depth = 12, colsample_bytree = .4)
+                   nrounds = 550, nfold = 4, early.stop.round = 10, num_class = 4, maximize = FALSE,
+                   evaluation = "merror", eta = 0.7, max_depth = 14, colsample_bytree = .4)
   
   #Create variable that identifies the optimal number of iterations for the model
   min.error.idx = which.min(xgb.tab$evaluation_log[, test_merror_mean])
@@ -160,7 +160,7 @@ for (i in 2:12){
   #Create model using the same parameters used in xgb.cv
   model <- xgboost(data = train.DMatrix, objective = "multi:softmax", booster = "gbtree",
                    eval_metric = "merror", nrounds = min.error.idx, 
-                   num_class = 4,eta = .2, max_depth = 14, colsample_bytree = .4)
+                   num_class = 4,eta = 0.7, max_depth = 14, colsample_bytree = .4)
   
   #Predict. Used the data_test.noID because it contained the same number of columns as the train.DMatrix
   #used to build the model.

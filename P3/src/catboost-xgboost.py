@@ -382,7 +382,7 @@ submit(cbc.predict(test_data))
 ## XGBOOST
 
 param = {'booster': 'gbtree',
-        'obective': 'multi:softmax',
+        'objective': 'multi:softmax',
         'eta': 0.025,
         'max_depth': 23,
         'colsample_bytree': 0.4,
