@@ -45,7 +45,7 @@ display(NAs)
 
 corr = train.select_dtypes(include = ['float64', 'int64']).iloc[:,1:].corr()
 sns.set(font_scale=2)
-sns.heatmap(corr,  linewidths=1, square=True)
+sns.heatmap(corr,  linewidths=0.3, square=True)
 plt.rcParams["figure.figsize"] = (30,20)
 plt.show()
 

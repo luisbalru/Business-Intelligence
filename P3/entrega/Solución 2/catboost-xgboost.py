@@ -80,12 +80,12 @@ print("Variables categóricas:",total_cardinality)
 display(cat_df)
 
 #Combinando training y test
-combineddf=pd.concat([train,test],axis=0,ignore_index=True)
-combineddf.head(5)
+all=pd.concat([train,test],axis=0,ignore_index=True)
+all.head(5)
 
-# Variables a eliminar 
+# Variables a eliminar
 
-combineddf.drop(['wpt_name',    # demasiados niveles
+all.drop(['wpt_name',    # demasiados niveles
     'subvillage',  # demasiados niveles
     'ward',        # demasiados niveles
     'recorded_by', # constante
@@ -98,68 +98,68 @@ combineddf.drop(['wpt_name',    # demasiados niveles
     'payment_type'],   #redundante
               axis=1, inplace=True)
 
-combineddf.shape
+all.shape
 
-combinedtemp= combineddf['construction_year'].replace(0,nan)
+combinedtemp= all['construction_year'].replace(0,nan)
 combinedtemp1=combinedtemp.dropna(how='all',axis=0)
 combinedtemp1.median()
 
 
-combinedtemp2= combineddf['gps_height'].replace(0,nan)
+combinedtemp2= all['gps_height'].replace(0,nan)
 combinedtemp3=combinedtemp2.dropna(how='all',axis=0)
 combinedtemp3.median()
 
 
 # Cambiando NAN por 0
-combineddf['funder'].replace(nan,0, inplace= True)
-combineddf['installer'].replace(nan,0, inplace= True)
-combineddf['permit'].replace(nan,0, inplace= True)
-combineddf['scheme_management'].replace(nan,0, inplace= True)
+all['funder'].replace(nan,0, inplace= True)
+all['installer'].replace(nan,0, inplace= True)
+all['permit'].replace(nan,0, inplace= True)
+all['scheme_management'].replace(nan,0, inplace= True)
 
-combineddf['public_meeting'].fillna(value=True, inplace=True)
+all['public_meeting'].fillna(value=True, inplace=True)
 
 
-combineddf['permit'].replace("0","TRUE", inplace= True) 
-combineddf['public_meeting'].replace("0","TRUE", inplace= True)
-combineddf['scheme_management'].replace(0, "Unknown", inplace=True) 
-combineddf['funder'].replace(0, "Other", inplace=True)
-combineddf['installer'].replace(0, "Other", inplace=True)
-combineddf['installer'].replace('-', "Other", inplace=True)
-combineddf['construction_year'].replace(0, 2000, inplace=True)
-combineddf['gps_height'].replace(0, 1166, inplace=True)       
+all['permit'].replace("0","TRUE", inplace= True)
+all['public_meeting'].replace("0","TRUE", inplace= True)
+all['scheme_management'].replace(0, "Unknown", inplace=True)
+all['funder'].replace(0, "Other", inplace=True)
+all['installer'].replace(0, "Other", inplace=True)
+all['installer'].replace('-', "Other", inplace=True)
+all['construction_year'].replace(0, 2000, inplace=True)
+all['gps_height'].replace(0, 1166, inplace=True)
 
-combineddf['date_recorded'] = pd.to_datetime(combineddf['date_recorded'])   
-combineddf['date_recorded'] = (combineddf['date_recorded'] - combineddf['date_recorded'].min()) / np.timedelta64(1, 'D')
+all['date_recorded'] = pd.to_datetime(all['date_recorded'])
+all['date_recorded'] = (all['date_recorded'] - all['date_recorded'].min()) / np.timedelta64(1, 'D')
 
 # Conversión de tipos
-combineddf['population']=combineddf['population'].astype('float64') 
-combineddf['gps_height']=combineddf['gps_height'].astype('float64')
-combineddf['construction_year']=combineddf['construction_year'].astype('float64')
-combineddf['amount_tsh']=combineddf['amount_tsh'].astype('float64')
+all['population']=all['population'].astype('float64')
+all['gps_height']=all['gps_height'].astype('float64')
+all['construction_year']=all['construction_year'].astype('float64')
+all['amount_tsh']=all['amount_tsh'].astype('float64')
 
-display(combineddf)
-
-
+display(all)
 
 
-combineddf.groupby(['extraction_type_class','extraction_type_group'])['extraction_type'].value_counts()
+
+
+all.groupby(['extraction_type_class','extraction_type_group'])['extraction_type'].value_counts()
 
 
 #Elimino extraction_type_group
-combineddf.drop(['extraction_type_group'],axis=1, inplace=True)
-combineddf.shape
+all.drop(['extraction_type_group'],axis=1, inplace=True)
+all.shape
 
-combineddf.groupby(['extraction_type_class'])['extraction_type'].value_counts()
+all.groupby(['extraction_type_class'])['extraction_type'].value_counts()
 
-combineddf.isnull().sum()
+all.isnull().sum()
 
 
-cat_cols=combineddf.select_dtypes(include=['object']).columns.values.tolist()
+cat_cols=all.select_dtypes(include=['object']).columns.values.tolist()
 cat_cols
 
 # Variables categóricas y numéricas
 
-num_cols=combineddf.select_dtypes(include=['int64', 'float64']).columns.values.tolist()
+num_cols=all.select_dtypes(include=['int64', 'float64']).columns.values.tolist()
 num_cols
 
 
@@ -181,34 +181,34 @@ cols=('basin',
  'waterpoint_type',
  'public_meeting',
  'funder',
- 'installer')  
+ 'installer')
 
 # Codificando variables
 for c in cols:
     lbl = LabelEncoder()
-    lbl.fit(list(combineddf[c].values))
-    combineddf[c] = lbl.transform(list(combineddf[c].values))
+    lbl.fit(list(all[c].values))
+    all[c] = lbl.transform(list(all[c].values))
 
 
-combineddf.shape
+all.shape
 
-combineddf.dtypes
+all.dtypes
 
 # Escalado de características
 scaler = StandardScaler()
-numeric_features = combineddf.select_dtypes(include=np.float64)
+numeric_features = all.select_dtypes(include=np.float64)
 
 scaler.fit(numeric_features)
-combineddf[numeric_features.columns] = scaler.transform(combineddf[numeric_features.columns])
+all[numeric_features.columns] = scaler.transform(all[numeric_features.columns])
 
-display(combineddf[numeric_features.columns].head())
-
-
+display(all[numeric_features.columns].head())
 
 
 
-x = combineddf[:train.shape[0]]
-test_data = combineddf[train.shape[0]:]
+
+
+x = all[:train.shape[0]]
+test_data = all[train.shape[0]:]
 
 
 x, labels = shuffle(x, labels, random_state= 10)
@@ -257,7 +257,7 @@ cbc = CatBoostClassifier(
     learning_rate=0.1,
     loss_function='MultiClass',
     eval_metric='Accuracy',
-).fit(x, labels, cat_features= ctrs_indexes)  
+).fit(x, labels, cat_features= ctrs_indexes)
 
 def submit(pred, name='ans_catboost'):
     y_pred = LEncoder.inverse_transform(pred.astype(int))
@@ -326,15 +326,3 @@ def submit(pred, name='ans_xgb_final'):
     ans_xgb_final.to_csv('submissions/' + name + '.csv', index=False)
 
 submit(clf.predict(test_dmatrix))
-"""
-importances = clf_final.get_fscore()
-importances = sorted(importances.items(), key=operator.itemgetter(1))
-
-temp = pd.DataFrame(importances, columns=['feature', 'fscore'])
-temp['fscore'] = temp['fscore'] / temp['fscore'].sum()
-plt.figure()
-temp.plot()
-temp.plot(kind='barh', x='feature', y='fscore', legend=False, figsize=(6, 10))
-plt.title('XGBoost Feature Importance')
-plt.xlabel('relative importance')
-"""

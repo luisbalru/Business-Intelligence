@@ -229,11 +229,29 @@ Tras el ajuste, tenemos el siguiente modelo:
 
 Buscando un ensemble learner en la documentación, encontré CatBoost (\cite{catboost1}). A pesar de que los resultados no fueron buenos (y menos aún al aplicar el mismo preprocesamiento para XGB), parece enriquecedor aquí señalarlo puesto que para mí fue un aprendizaje.  
 
-Tras limpiar los datos eliminando variables por irrelevantes o por tener demasiados niveles, cambiando los NAN para poder computar, cambiar tipos y escalando características numéricas, utilizo CatBoostClassifier con los siguientes parámetros: 
+Tras limpiar los datos eliminando variables por irrelevantes o por tener demasiados niveles, cambiando los NAN para poder computar, cambiar tipos y escalando características numéricas,
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.35]{catboost1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\includegraphics[scale=0.4]{prep2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Seleccionando características e impuntando valores perdidos} 
+	\label{fig:prep-cat1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{prep21.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Conversión de tipos} 
+	\label{fig:prep-cat2}
+\end{figure}
+
+
+
+ utilizo CatBoostClassifier con los siguientes parámetros: 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.32]{catboost1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
 	\caption{CatBoost} 
 	\label{fig:CB1}
 \end{figure}
@@ -259,7 +277,7 @@ Con los mismos datos pruebo dos configuraciones de parámetros distintas de XGB 
 
 \section{Solución 3}
 
-Es la solución 3 la que me da el mejor resultado. Presentía que el problema, como casi siempre, es el preprocesamiento y con Python no acababa de ver con facilidad el conjunto de datos. En un intento de mejorar, cambio a R y comienzo de (casi) cero el problema. Con las ideas que me han ido dando las demás visualizaciones y, francamente, tirando de sentido común más que de conocimiento real, elimino 24 de las 40 variables disponibles porque considero (también lo vi antes con el gráfico de correlaciones) con muchas de ellas son redundantes. 
+Es la solución 3 la que me da el mejor resultado. Presentía que el problema, como casi siempre, es el preprocesamiento y con Python no acababa de ver con facilidad el conjunto de datos. En un intento de mejorar, cambio a R (consultando \cite{r2}, \cite{r1}) y comienzo de (casi) cero el problema. Con las ideas que me han ido dando las demás visualizaciones y, francamente, tirando de sentido común más que de conocimiento real, elimino 24 de las 40 variables disponibles porque considero (también lo vi antes con el gráfico de correlaciones) con muchas de ellas son redundantes. 
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
