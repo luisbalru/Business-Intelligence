@@ -56,11 +56,21 @@ datos$gps_height[datos$gps_height==0]=median(datos$gps_height[datos$gps_height>0
 # SELECCIÓN DE CARACTERÍSTICAS
 
 datos$num_private<-NULL
+
+
 datos$recorded_by<-NULL
+
+
 datos$wpt_name<-NULL
+
+
 datos$extraction_type_group<-NULL
 datos$extraction_type<-NULL
+
+
 datos$payment_type<-NULL
+
+
 datos$water_quality<-NULL
 
 

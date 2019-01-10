@@ -259,17 +259,40 @@ Con los mismos datos pruebo dos configuraciones de parámetros distintas de XGB 
 
 \section{Solución 3}
 
-Es la solución 3 la que me da el mejor resultado. Presentía que el problema, como casi siempre, es el preprocesamiento y con Python no acababa de ver con facilidad el conjunto de datos. En un intento de mejorar, cambio a R y comienzo de (casi) cero el problema. Con las ideas que me han ido dando las demás visualizaciones y, francamente, tirando de sentido común más que de conocimiento real, elimino 24 de las 40 variables disponibles porque considero (también lo vi antes con el gráfico de correlaciones) con muchas de ellas son redundantes. Además, tras ejecutar el modelo estudio la importancia de las variables para poder eliminar alguna más:
+Es la solución 3 la que me da el mejor resultado. Presentía que el problema, como casi siempre, es el preprocesamiento y con Python no acababa de ver con facilidad el conjunto de datos. En un intento de mejorar, cambio a R y comienzo de (casi) cero el problema. Con las ideas que me han ido dando las demás visualizaciones y, francamente, tirando de sentido común más que de conocimiento real, elimino 24 de las 40 variables disponibles porque considero (también lo vi antes con el gráfico de correlaciones) con muchas de ellas son redundantes. 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.6]{selec-carac.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Selección de características} 
+	\label{fig:selec-carac}
+\end{figure}
+
+
+
+Además, como se ve en la imagen anterior, elimino más variables dado que, tras ejecutar el modelo, estudio la importancia de las mismas:
 
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
-	\includegraphics[scale=0.5]{importancia-variables.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\includegraphics[scale=0.7]{importancia-variables.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
 	\caption{Importancia de las variables en el modelo} 
 	\label{fig:importancia}
 \end{figure}
 
-Por otra parte, imputo valores para las variables construction-year y gps-height utilizando la mediana de los datos que sí son validos en sendas columnas. Una vez que están preparados los datos, construyo un ensemble con entre 11 y 25 modelos XGBoost de igual peso en la solución. Digo 25 porque entre las distintas entregas he ido cambiando parámetros y 25 me propinó los mejores resultados. Además, utilizó validación cruzada para delimitar el número de iteraciones realmente útiles (una vez que se deja de obtenerse ganancia, no sigo iterando) y genero el modelo con los mismos parámetros (también los he cambiado, como expreso en la tabla superior) y lo predigo con ese modelo los distintos valores de test. Esas predicciones las voy acumulando en columnas de la tabla \textit{solucion}.
+Por otra parte, imputo valores para las variables construction-year y gps-height utilizando la mediana de los datos que sí son validos en sendas columnas. 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{mv.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Imputación en las variables construction-year y gps-height} 
+	\label{fig:mv}
+\end{figure}
+
+
+
+
+Una vez que están preparados los datos, construyo un ensemble con entre 11 y 25 modelos XGBoost de igual peso en la solución. Digo 25 porque entre las distintas entregas he ido cambiando parámetros y 25 me propinó los mejores resultados. Además, utilizó validación cruzada para delimitar el número de iteraciones realmente útiles (una vez que se deja de obtenerse ganancia, no sigo iterando) y genero el modelo con los mismos parámetros (también los he cambiado, como expreso en la tabla superior) y lo predigo con ese modelo los distintos valores de test. Esas predicciones las voy acumulando en columnas de la tabla \textit{solucion}.
 
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
