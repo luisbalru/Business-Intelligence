@@ -10,7 +10,7 @@
 	\normalfont \normalsize 
 	\textsc{\textbf{Inteligencia de Negocio (2018-2019)} \\ Doble Grado en Ingeniería Informática y Matemáticas \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
 	\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-	\huge Memoria Práctica 3: \\ Segmentación para Análisis Empresarial. Grupo de Prácticas 1 \\ % The assignment title
+	\huge Memoria Práctica 3: \\ Competición en DrivenData. Grupo de Prácticas 1 \\ % The assignment title
 	\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
@@ -73,11 +73,13 @@
 
 En la presente práctica nos hemos enfrentado a la competición de Driven Data \textit{Pump it Up: Data Mining the Water Table} basada en predecir qué bombas de extracción de aguas funcionan, cuáles necesitan algunas reparaciones y cuáles no funcionan. Para predecir una de estas tres clases se dispone de 39 variables sobre qué tipo de bomba se está usando, cuándo se instaló, cómo se administra, su ubicación, datos sobre la cuenca geográfica, tipo de extracción, coste del agua,etcc. Una comprensión inteligente de qué puntos de agua fallarán puede mejorar las operaciones de mantenimiento y garantizar que el agua potable y limpia esté disponible para las comunidades de Tanzania. El conjunto de entrenamiento consta de 59.400 instancias. \\
 
-En mi caso, para cumplir las restricciones impuestas en el guión, incluyo en la documentación cuatro directorios que las soluciones que he desarrollado. El primero, llamado \textit{Pruebas}, contiene dos ficheros en los que, utilizando el código de ejemplo del profesor D. Jorge Casillas, pongo en práctica otros algoritmos como son Random Forest y XGB. Tras familiarizarme con el problema, pasé a desarrollar una de mis soluciones. Dicha solución se encuentra en \textit{Solucion 1} y hago un preprocesamiento máx exhaustivo para finalmente utilizar Random Forest. Sobre esta hago ciertas modificaciones en parámetros y preprocesamiento (introduzco PCA, elimino unas variables a veces y otras no) para ver cómo se comporta el score. Para esta solución, mi score más alto es 0.8181 (puesto 476). \\
+En mi caso, para cumplir las restricciones impuestas en el guión, incluyo en la documentación cuatro directorios que las soluciones que he desarrollado. El primero, llamado \textit{Pruebas}, contiene dos ficheros en los que, utilizando el código de ejemplo del profesor D. Jorge Casillas, pongo en práctica otros algoritmos como son Random Forest y XGB. Tras familiarizarme con el problema, pasé a desarrollar una de mis soluciones. Dicha solución se encuentra en \textit{Solucion 1} y hago un preprocesamiento más exhaustivo para finalmente utilizar Random Forest. Sobre esta hago ciertas modificaciones en parámetros y preprocesamiento (introduzco PCA, elimino unas variables a veces y otras no) para ver cómo se comporta el score. Para esta solución, mi score más alto es 0.8181 (puesto 476). \\
 
 Sin embargo, al tratarse de un problema multiclase, sospecho que Random Forest puede flojear, así que intento acercarme a algoritmos de boosting tipo XGB o uno nuevo que descubro en la literatura llamado CatBoost. El intento fue fallido (\textit{Solución 2}). Por tanto, vuelvo a mi anterior RF para intentar mejorar la puntuación cambiando de nuevo parámetros e intentando nuevos preprocesamientos. \\
 
-Ante la falta de mejora, comienzo totalmente de nuevo el problema (Solución 3). Cambio de Python a R ya que echaba en falta la facilidad que da R para visualizar tablas y conjuntos de datos además de la inmediatez de la selección de características. Tras un preprocesamiento basado en eliminar aquellas columnas que parecen no mejorar la clasificación, tratamiento de valores perdidos de algunas variables y modificación del formato de otras. Una vez procesados, utilizo un XGB con validación cruzada para determinar cuántas veces ejecuto el modelo. Tras varios ajustes sobre el algoritmo consigo mi mayor puntuación (0.8242, puesto 114).
+Ante la falta de mejora, comienzo totalmente de nuevo el problema (Solución 3). Cambio de Python a R ya que echaba en falta la facilidad que da R para visualizar tablas y conjuntos de datos además de la inmediatez de la selección de características. Tras un preprocesamiento basado en eliminar aquellas columnas que parecen no mejorar la clasificación, tratamiento de valores perdidos de algunas variables y modificación del formato de otras. Una vez procesados, utilizo un XGB con validación cruzada para determinar cuántas veces ejecuto el modelo. Tras varios ajustes sobre el algoritmo consigo mi mayor puntuación (0.8242, puesto 114). \\
+
+Para acabar quiero reseñar que fundamentalmente he basado mi solución en las técnicas aprendidas en clase, en \cite{data_mining_book}, \cite{sklearn} y \cite{foro}
 
 
 \section{Tabla resumen}
@@ -98,7 +100,7 @@ Presento la tabla resumen de todas las subidas. Muchas de ellas parten de un pre
 		Solución 1        & 2018-12-28 12:18:24   & 476               & 0.81                    & 0.8078                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & LightGBM                                                & \begin{tabular}[c]{@{}c@{}}Objetive:binary\\ num\_estimadores=1000\end{tabular}                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Cambiando a un nuevo\\ algoritmo para ver mejoría\end{tabular}                          \\ \hline
 		Solución 1        & 2018-12-29 02:09:38   & 476               & 0.8129                  & 0.8179                     & Idem añadiendo codes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & Random Forest                                           & 500 estimadores                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Sobre RF, agregar\\ pequeñas modificaciones\\ en preprocesamiento\end{tabular}          \\ \hline
 		Solución 1        & 2018-12-29 02:33:22   & 476               & 0.8136                  & 0.8181                     & \begin{tabular}[c]{@{}c@{}}Idem cambiando LDA por\\ PCA\end{tabular}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & \begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & 500 estimadores                                                                                                                                                                                                                                                                     & Probando con PCA                                                                                                   \\ \hline
-		Solución 2        & 2018-12-30 23:34:28   & 476               & 0.82                    & 0.8026                     & \begin{tabular}[c]{@{}c@{}}-Eliminar características con\\ muy pocos o muchos valores distintos\\ -Reemplazamiento de NaN\\ - Reemplazamiento de 0\\ - Imputación de MV\\ - Cambiar coordenadas terrestres\\ - Codificación de variables categóricas\\ - Escalar características\end{tabular}                                                                                                                                                                                                                                                                                                                                                                           & CatBoost                                                & \begin{tabular}[c]{@{}c@{}}Learning\_rate=0.1\\ loss\_function = MultiClass\\ eval\_metric = Accuracy\\ od\_pval=0.01\end{tabular}                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Investigando con \\ \\ CatBoost\end{tabular}                                            \\ \hline
+		Solución 2        & 2018-12-30 23:34:28   & 476               & 0.82                    & 0.8026                     & \begin{tabular}[c]{@{}c@{}}-Eliminar características con\\ muy pocos o muchos valores distintos\\ -Reemplazamiento de NaN\\ - Reemplazamiento de 0\\ - Imputación de MV\\ - Codificación de variables categóricas\\ - Escalar características\end{tabular}                                                                                                                                                                                                                                                                                                                                                                           & CatBoost                                                & \begin{tabular}[c]{@{}c@{}}Learning\_rate=0.1\\ loss\_function = MultiClass\\ eval\_metric = Accuracy\\ od\_pval=0.01\end{tabular}                                                                                                                                                  & \begin{tabular}[c]{@{}c@{}}Investigando con \\ \\ CatBoost\end{tabular}                                            \\ \hline
 		Solución 2        & 2018-12-30 23:34:46   & 476               & 0.6                     & 0.5461                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & \begin{tabular}[c]{@{}c@{}}'booster': 'gbtree',\\         'objective': 'multi:softmax',\\         'eta': 0.025,\\         'max\_depth': 23,\\         'colsample\_bytree': 0.4,\\         'silent': 1,\\         'eval\_metric': 'mlogloss',\\         'num\_class': 3\end{tabular} & \begin{tabular}[c]{@{}c@{}}Intento muy fallido\\ con XGBoost.\\ Probables errores\\ no encontrados\end{tabular}    \\ \hline
 		Solución 2        & 2018-12-30 23:55:16   & 476               & 0.65                    & 0.5461                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & Idem. 'eta':0.1                                                                                                                                                                                                                                                                     & \begin{tabular}[c]{@{}c@{}}Intentando mejorar\\ resultados sin éxito\end{tabular}                                  \\ \hline
 		Solución 2        & 2018-12-31 01:01:45   & 476               & 0.79                    & 0.7273                     & Idem                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & XGBoost                                                 & Idem                                                                                                                                                                                                                                                                                & \begin{tabular}[c]{@{}c@{}}Corrigiendo errata\\ que hace mejorar \\ \\ pero no suficiente\end{tabular}             \\ \hline
@@ -159,7 +161,7 @@ Tras el análisis exploratorio, extraje las siguientes conclusiones:
 \begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
 	\centering
 	\includegraphics[scale=0.5]{categoricas.jpg}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
-	\caption{Características y porcentaje de MV} 
+	\caption{Categóricas y porcentaje de MV} 
 	\label{fig:cat}
 \end{figure}
 
@@ -222,10 +224,63 @@ Tras el ajuste, tenemos el siguiente modelo:
 	\label{fig:RF}
 \end{figure}
 
-\newpage
  
 \section{Solución 2}
 
+Buscando un ensemble learner en la documentación, encontré CatBoost (\cite{catboost1}). A pesar de que los resultados no fueron buenos (y menos aún al aplicar el mismo preprocesamiento para XGB), parece enriquecedor aquí señalarlo puesto que para mí fue un aprendizaje.  
+
+Tras limpiar los datos eliminando variables por irrelevantes o por tener demasiados niveles, cambiando los NAN para poder computar, cambiar tipos y escalando características numéricas, utilizo CatBoostClassifier con los siguientes parámetros: 
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.35]{catboost1.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{CatBoost} 
+	\label{fig:CB1}
+\end{figure}
+
+
+Con los mismos datos pruebo dos configuraciones de parámetros distintas de XGB con resultados muy pobres.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{xgb2.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{XGB (1)} 
+	\label{fig:xgb2}
+\end{figure}
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{xgb3.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{XGB (2)} 
+	\label{fig:xgb3}
+\end{figure}
+
+\newpage
+
+\section{Solución 3}
+
+Es la solución 3 la que me da el mejor resultado. Presentía que el problema, como casi siempre, es el preprocesamiento y con Python no acababa de ver con facilidad el conjunto de datos. En un intento de mejorar, cambio a R y comienzo de (casi) cero el problema. Con las ideas que me han ido dando las demás visualizaciones y, francamente, tirando de sentido común más que de conocimiento real, elimino 24 de las 40 variables disponibles porque considero (también lo vi antes con el gráfico de correlaciones) con muchas de ellas son redundantes. Además, tras ejecutar el modelo estudio la importancia de las variables para poder eliminar alguna más:
+
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{importancia-variables.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Importancia de las variables en el modelo} 
+	\label{fig:importancia}
+\end{figure}
+
+Por otra parte, imputo valores para las variables construction-year y gps-height utilizando la mediana de los datos que sí son validos en sendas columnas. Una vez que están preparados los datos, construyo un ensemble con entre 11 y 25 modelos XGBoost de igual peso en la solución. Digo 25 porque entre las distintas entregas he ido cambiando parámetros y 25 me propinó los mejores resultados. Además, utilizó validación cruzada para delimitar el número de iteraciones realmente útiles (una vez que se deja de obtenerse ganancia, no sigo iterando) y genero el modelo con los mismos parámetros (también los he cambiado, como expreso en la tabla superior) y lo predigo con ese modelo los distintos valores de test. Esas predicciones las voy acumulando en columnas de la tabla \textit{solucion}.
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+	\centering
+	\includegraphics[scale=0.5]{modelo-ensemble.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+	\caption{Bucle con CV y la creación del modelo con los mismos parámetros} 
+	\label{fig:modelo}
+\end{figure}
+
+Por último, agrupo la tabla solución en un vector contabilizando los resultados más repetidos para cada fila. Tras ello, genero la predicción en el formato correspondiente para la entrega y la envío. 
+
+\newpage
  
 \section{Bibliografía}
 
